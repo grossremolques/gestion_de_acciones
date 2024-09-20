@@ -18,6 +18,9 @@ class ApiServices {
       if(e.status === 401) {
         window.document.location.reload()
       }
+      else if(e.status === 403) {
+        console.warn(`No tienes permisos para ver este archivo ${this.nameSheet} ${this.sheetId}`)
+      }
       console.log(e)
       //401 Request had invalid authentication credentials.
       console.error("Error in getResponse:", `🚫${e.status} ${e.result.error.message}`);
@@ -27,7 +30,7 @@ class ApiServices {
     try {
       const response = await this.getResponse();
       const data = response.result.values;
-      const headers = data[0]; // Obtenemos los encabezados del array
+      const headers = data[this.rowHead - 1]; // Obtenemos los encabezados del array
       const newData = []; // Creamos un nuevo array para almacenar los objetos transformados
       for (var i = 1; i < data.length; i++) {
         // Iteramos desde 1 para evitar el primer elemento que son los encabezados
@@ -47,6 +50,7 @@ class ApiServices {
   async postData(data) {
     const today = dayjs(new Date(), "YYYY-DD-MM");
     data.fecha = today.format("DD/MM/YYYY");
+    if(data.fecha === 'Invalid Date') {window.alert('¡Hubo un problema al registrar la fecha! ❌ Error: Invalid Date 🗓️')}
     convertGroupDates(data,'en-es')
     const headers = await this.getHeaders();
     const newData = this.convertData(data, headers);

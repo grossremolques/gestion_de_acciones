@@ -26,10 +26,10 @@ const AddOportunidad = async (content) => {
       </div>
     `
     content.innerHTML = view;
-    form = document.querySelector('#formOportunidad')
+    form = document.getElementById('formOportunidad')
     await template.setting()
 
-    const saveButton = document.querySelector("#saveButton");
+    const saveButton = document.getElementById("saveButton");
     saveButton.addEventListener("click", handleSave);
     //
 }
@@ -51,6 +51,5 @@ const handleSave = async (event) => {
     }
 
   }
-  console.log(data)
 }
 export default AddOportunidad

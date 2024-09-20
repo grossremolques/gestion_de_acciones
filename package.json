@@ -1,7 +1,7 @@
 {
-  "name": "no_conformidades",
+  "name": "gestion_de_acciones",
   "version": "1.0.0",
-  "description": "Gestión de no confromidades",
+  "description": "Gestión de acciones",
   "main": "index.js",
   "scripts": {
     "deploy": "gh-pages -d dist",
@@ -11,11 +11,11 @@
     "start": "webpack serve --config webpack.config.dev.js"
   },
   "keywords": [
-    "Documentos",
+    "Gestión de acciones",
     "ISO",
     "9001",
-    "Ventas",
-    "Notas de pedido"
+    "SGC",
+    "Calidad"
   ],
   "author": "Katherin Guerrero",
   "license": "MIT",

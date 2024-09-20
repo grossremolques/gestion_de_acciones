@@ -6,6 +6,9 @@ import NoConfomidad from "@pages/NoConformidad/NoConformidad";
 import NoConfomidades from "@pages/NoConformidad/NoConformidades";
 import AddNoConfomidad from "@pages/NoConformidad/AddNoConformidad";
 import AddOportunidad from "@pages/Oportunidad/AddOportunidad";
+import NoPermisos from "../pages/NoPermisos";
+import Oportunidades from "@pages/Oportunidad/Oportunidades";
+import Oportunidad from "../pages/Oportunidad/Oportunidad";
 
 const routes = {
   "/": Home,
@@ -13,6 +16,9 @@ const routes = {
   "/no-conformidades": NoConfomidades,
   "/add-no-confomidad": AddNoConfomidad,
   "/add-oportunidad": AddOportunidad,
+  "/no-permissions" : NoPermisos,
+  "/oportunidades" : Oportunidades,
+  "/oportunidad=:id": Oportunidad,
 };
 const resolveRoutes = (route) => {
   if (route === undefined) {
@@ -20,6 +26,9 @@ const resolveRoutes = (route) => {
   }
   else if(route.startsWith('no-conformidad=')) {
     route = "no-conformidad=:id"
+  }
+  else if(route.startsWith('oportunidad=')) {
+    route = "oportunidad=:id"
   }
   return `/${route}`;
 };

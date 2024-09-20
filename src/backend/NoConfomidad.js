@@ -47,11 +47,10 @@ class NoConformidad extends ApiServices {
       console.log(e)
     }
   }
-  async hasPermission() {
+  async typePermission(alias) {
     try{
-      const response = await this.getDataInJSON()
-      const legajo = await DataEmployees.getLegajo();
-      return response.some(item => item.legajo === legajo)
+      const response = await this.getDataInJSON();
+      return response.find(item => item.alias === alias)
     }
     catch(e) {
       console.log(e)
@@ -67,4 +66,5 @@ const Attributes = new NoConformidad({
 });
 const DataNoConformidad = new NoConformidad({ sheetId: SheetId, nameSheet: "Registro(TEST)", rowHead: 1 });
 const DataResponsable = new NoConformidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
-export { DataNoConformidad, Attributes, DataResponsable };
+const DataPermisos = new NoConformidad({ sheetId: SheetId, nameSheet: "Permisos", rowHead: 3 });
+export { DataNoConformidad, Attributes, DataResponsable, DataPermisos };

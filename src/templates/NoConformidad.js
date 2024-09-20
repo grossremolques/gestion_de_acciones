@@ -13,7 +13,8 @@ import IconCancelar from "../assets/icons/cancelado.png";
 import IconProveedor from "../assets/icons/supply-man.png";
 import IconProblemSolving from "../assets/icons/problem-solving.png";
 import IconImplemantacion from "../assets/icons/coordinador.png";
-import IconVerificacion from "../assets/icons/verificacion.png";
+import IconVerificacion from "../assets/icons/verificar.png";
+import IconPlanVrif from "../assets/icons/lupa.png";
 import { Attributes } from "../backend/NoConfomidad";
 import DataEmployees from "../backend/Employees";
 import DataAreas from "../backend/Areas";
@@ -24,7 +25,7 @@ import DataClients from "../backend/Clients";
 let isNew;
 class NoConformidades {
   constructor() {
-    this.modal = new MyCustumeModal(document.querySelector("#modal"));
+    this.modal = new MyCustumeModal(document.getElementById("modal"));
     this.responsableByDefault = false;
   }
   async formCompleted(completed) {
@@ -52,7 +53,7 @@ class NoConformidades {
     
     <div class="row g-1">  
     <hr>
-        ${await this.implementacion()}
+        ${await this.implementacion(employees)}
     </div>
     ${await this.verificacion(attributes, employees)}
     </form>
@@ -100,7 +101,7 @@ class NoConformidades {
         : ""
     }
         ${selectComponent({
-          col: "12",
+          col: "",
           mdCol: "",
           xlCol: "",
           nameLabel: "Registrado por",
@@ -356,7 +357,10 @@ class NoConformidades {
       </div>
     </div>
     <p class="small text-success mb-1">Una contención es una acción inmediata tomada para evitar la propagación o el agravamiento de una no conformidad. <strong>No soluciona la causa raíz</strong>, pero controla temporalmente sus efectos hasta implementar una corrección definitiva.</p>
-    <p class="small text-danger p">Dar un <strong>aviso</strong> no se considera una contención. Complete esta sección solo si efectivamente existe una contención al desvío, de lo contrario, NO COMPLETE ESTA SECCIÓN.</p>
+    <p class="small text-danger mb-1 info-contencion">
+      Dar un <strong>aviso</strong> no se considera una contención. Complete esta sección solo si efectivamente existe una contención al desvío, de lo contrario, NO COMPLETE ESTA SECCIÓN.
+    </p>
+    
     <div class="row g-1">
       <div class="col-12 col-md-2">
         <div class="row g-1">
@@ -385,12 +389,11 @@ class NoConformidades {
               name: "id_otr",
               sizes: "sm",
               required: true,
-              className: 'gestion'
+              className: "gestion",
             })}
             `
               : ""
           }
-          
         </div>
       </div>
       ${textarea({
@@ -429,7 +432,7 @@ class NoConformidades {
           data: attributes,
           textNode: "si_no",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${textarea({
           col: "10",
@@ -441,7 +444,7 @@ class NoConformidades {
           row: "1",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${inputComponent({
           col: "12",
@@ -453,7 +456,7 @@ class NoConformidades {
           name: "fecha_anulacion",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
     </div>
     <div class="row g-1">
@@ -474,7 +477,7 @@ class NoConformidades {
           data: attributes,
           textNode: "si_no",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${inputComponent({
           col: "",
@@ -486,7 +489,7 @@ class NoConformidades {
           name: "id_prov",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${inputComponent({
           col: "12",
@@ -518,7 +521,7 @@ class NoConformidades {
           data: attributes,
           textNode: "si_no",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${textarea({
           col: "12",
@@ -530,7 +533,7 @@ class NoConformidades {
           row: "1",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
     </div>
     <div class="row g-1">  
@@ -544,7 +547,7 @@ class NoConformidades {
           row: "1",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${textarea({
           col: "12",
@@ -556,7 +559,7 @@ class NoConformidades {
           row: "1",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
         ${inputComponent({
           col: "12",
@@ -568,13 +571,13 @@ class NoConformidades {
           name: "fecha_plazo",
           sizes: "sm",
           required: true,
-          className: 'gestion'
+          className: "gestion",
         })}
     </div>
     `;
     return view;
   }
-  async implementacion() {
+  async implementacion(employees) {
     const view = `
     <div class="d-flex justify-content-between align-items-end mt-3">
       ${SubTitle({ title: "Implementación", urlIcon: IconImplemantacion })}
@@ -593,7 +596,7 @@ class NoConformidades {
       name: "fecha_impl",
       sizes: "sm",
       required: true,
-      className: 'gestion'
+      className: "gestion",
     })}
     ${textarea({
       col: "",
@@ -605,59 +608,71 @@ class NoConformidades {
       row: "1",
       sizes: "sm",
       required: true,
-      className: 'gestion'
+      className: "gestion",
     })}
+    <div class="row g-1">  
+     ${MiniSubTitle({
+       title: "Parametros de la verificacón de eficacia",
+       urlIcon: IconPlanVrif,
+       mt: 2,
+       color: "body-secondary",
+     })}
+      ${textarea({
+        col: "12",
+        mdCol: "",
+        xlCol: "",
+        nameLabel: "Metodología",
+        id: "met_verif_ef",
+        name: "met_verif_ef",
+        row: "1",
+        sizes: "sm",
+        required: true,
+        className: "gestion",
+        placeholder: "Indique la metodología de verificación de eficacia",
+      })}
+      ${selectComponent({
+        col: "6",
+        mdCol: "auto",
+        xlCol: "auto",
+        nameLabel: "Responsable",
+        id: "responsable_ef",
+        name: "responsable_ef",
+        sizes: "sm",
+        data: employees,
+        textNode: "fullName",
+        value: "alias",
+        required: true,
+        className: "gestion",
+      })}
+      ${inputComponent({
+        col: "6",
+        mdCol: "auto",
+        xlCol: "auto",
+        type: "date",
+        nameLabel: "Fecha prevista",
+        id: "fecha_prev_ef",
+        name: "fecha_prev_ef",
+        sizes: "sm",
+        required: true,
+        className: "gestion",
+      })}
+    </div>
     `;
     return view;
   }
   async verificacion(attributes, employees) {
     const view = `
-    ${SubTitle({
-      title: "Verificación de Eficacia",
-      urlIcon: IconVerificacion,
-      mt: 4,
-    })}
-    <div class="row g-1">  
-        ${textarea({
-          col: "12",
-          mdCol: "",
-          xlCol: "",
-          nameLabel: "Metodología",
-          id: "met_verif_ef",
-          name: "met_verif_ef",
-          row: "1",
-          sizes: "sm",
-          required: true,
-          className: 'gestion',
-          placeholder: "Indique la metodología de verificación de eficacia",
-        })}
-        ${selectComponent({
-          col: "6",
-          mdCol: "auto",
-          xlCol: "auto",
-          nameLabel: "Responsable",
-          id: "responsable_ef",
-          name: "responsable_ef",
-          sizes: "sm",
-          data: employees,
-          textNode: "fullName",
-          value: "alias",
-          required: true,
-          className: 'gestion',
-        })}
-        ${inputComponent({
-          col: "6",
-          mdCol: "auto",
-          xlCol: "auto",
-          type: "date",
-          nameLabel: "Fecha prevista",
-          id: "fecha_prev_ef",
-          name: "fecha_prev_ef",
-          sizes: "sm",
-          required: true,
-          className: 'gestion',
-        })}
-        </div>
+    <div class="d-flex justify-content-between align-items-end mt-3">
+      ${SubTitle({
+        title: "Verificación de Eficacia",
+        urlIcon: IconVerificacion,
+      })}
+      <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" role="switch" id="completarVerificacion">
+        <label class="form-check-label small text-success" for="completarVerificacion">Verificar</label>
+      </div>
+    </div>
+    
         <div class="row g-1"> 
             ${selectComponent({
               col: "auto",
@@ -670,7 +685,7 @@ class NoConformidades {
               data: attributes,
               textNode: "resultado_ef",
               required: true,
-              className: 'gestion',
+              className: "gestion",
             })}
             ${textarea({
               col: "",
@@ -682,7 +697,7 @@ class NoConformidades {
               row: "1",
               sizes: "sm",
               required: true,
-              className: 'gestion',
+              className: "gestion",
             })}
             ${inputComponent({
               col: "12",
@@ -694,15 +709,15 @@ class NoConformidades {
               name: "fecha_ef",
               sizes: "sm",
               required: true,
-              className: 'gestion',
+              className: "gestion",
             })}
         </div>
     `;
     return view;
   }
-  setting(data) {
-    this.handleUser(data);
-    this.getSectores(data);
+  async setting(data) {
+    await DataEmployees.handleUser(data)
+    await DataAreas.getSectores(data)
     this.handleTipoDesvio(data);
     this.handlePNC(data);
     this.handleReclamoCliente(data);
@@ -715,41 +730,12 @@ class NoConformidades {
     this.handleImplementación(data);
     this.handleCliente(data);
     this.handleProveedor(data);
+    this.handleTipoContencion(data);
+    this.handleVerificacion(data);
   }
-  async handleUser(data) {
-    if (!data) {
-      try {
-        const user = await DataEmployees.getActiveUser();
-        const input = document.querySelector("#registrado_por");
-        input.value = user.alias;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }
-  async getSectores(data) {
-    const inputArea = document.querySelector("#area");
-    const loadSectores = async (data) => {
-      const area = data ? data.area : inputArea.value;
-      try {
-        const sectores = await DataAreas.getSectoresByArea(area);
-        const input = document.querySelector("#sector");
-        const optionsSectores = options({ data: sectores, textNode: "sector" });
-        input.innerHTML = optionsSectores;
-        input.value = data ? data.sector : "";
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    if (data) {
-      await loadSectores(data);
-    }
-    inputArea.addEventListener("change", async () => {
-      await loadSectores();
-    });
-  }
+  
   handleTipoDesvio(data) {
-    const inputTipo_desvio = document.querySelector("#tipo_desvio");
+    const inputTipo_desvio = document.getElementById("tipo_desvio");
     const setting = (data) => {
       const tipo_desvio = data ? data.tipo_desvio : inputTipo_desvio.value;
       const parametros = [
@@ -800,7 +786,7 @@ class NoConformidades {
     });
   }
   handlePNC(data) {
-    const inputPNC = document.querySelector("#pnc");
+    const inputPNC = document.getElementById("pnc");
     const setting = (data) => {
       const pnc = data ? data.pnc : inputPNC.value;
       this.settingInputs({
@@ -817,7 +803,7 @@ class NoConformidades {
     });
   }
   handleReclamoCliente(data) {
-    const inputOrigen = document.querySelector("#origen");
+    const inputOrigen = document.getElementById("origen");
     const setting = (data) => {
       const origen = data ? data.origen : inputOrigen.value;
       const validation = origen != "Reclamo de cliente";
@@ -854,8 +840,8 @@ class NoConformidades {
     });
   }
   handleTrazabilidad(data) {
-    const inputDocumento = document.querySelector("#documento");
-    const inputOrigen = document.querySelector("#origen");
+    const inputDocumento = document.getElementById("documento");
+    const inputOrigen = document.getElementById("origen");
     const setting = (data) => {
       const documento = data ? data.documento : inputDocumento.value;
       const origen = data ? data.origen : inputOrigen.value;
@@ -879,7 +865,7 @@ class NoConformidades {
     });
   }
   async handleDocumento(data) {
-    const inputDocumento = document.querySelector("#documento");
+    const inputDocumento = document.getElementById("documento");
     const setting = async (data) => {
       const documento = data ? data.documento : inputDocumento.value;
       this.settingInputs({
@@ -901,28 +887,32 @@ class NoConformidades {
   }
   async handleResponsable(data) {
     if (!data) {
-      const tipo_desvio = document.querySelector("#tipo_desvio").value;
-      const documento = document.querySelector("#documento").value;
-      const origen = document.querySelector("#origen").value;
+      const tipo_desvio = document.getElementById("tipo_desvio").value;
+      const documento = document.getElementById("documento").value;
+      const origen = document.getElementById("origen").value;
       let responsable;
       if (origen === "Reclamo de cliente") {
         const data = await DataResponsable.getResponsableByType(origen);
         responsable = data.responsable;
+        this.responsableByDefault = false;
       } else if (tipo_desvio === "Procedimiento") {
         const data = await DataResponsable.getResponsableByType(tipo_desvio);
         responsable = data.responsable;
+        this.responsableByDefault = true;
       } else if (documento != "No aplica" && documento != "") {
         const data = await DataResponsable.getResponsableByType(documento);
         responsable = data.responsable;
+        this.responsableByDefault = false;
       } else {
         responsable = "MAROT";
+        this.responsableByDefault = true;
       }
-      const input = document.querySelector("#responsable");
+      const input = document.getElementById("responsable");
       input.value = responsable;
     }
   }
   handleContencion(data) {
-    const completarContencion = document.querySelector("#completarContencion");
+    const completarContencion = document.getElementById("completarContencion");
     const setting = () => {
       const parametros = [
         {
@@ -947,7 +937,7 @@ class NoConformidades {
   }
   handleAnular(data) {
     if (data) {
-      const inputAnular = document.querySelector("#anular");
+      const inputAnular = document.getElementById("anular");
       const setting = (data) => {
         const anular = data ? data.anular : inputAnular.value;
         const parametros = [
@@ -961,22 +951,28 @@ class NoConformidades {
             validation: anular != "Sí",
             value: "1900-01-01",
           },
+          {
+            IdInput: "requiere_acc",
+            validation: anular === "Sí",
+            value: "No aplica",
+          },
         ];
         parametros.map((item) => this.settingInputs(item));
       };
       if (inputAnular.value === "") {
         inputAnular.value = "No";
-        inputAnular.classList.add('test')
+        inputAnular.classList.add("test");
       }
       setting(data);
       inputAnular.addEventListener("change", () => {
         setting();
+        this.handleAccionCorrect(data);
       });
     }
   }
   handleReclamoProveedor(data) {
     if (data) {
-      const inputReclamoPrv = document.querySelector("#reclamo_proveedor");
+      const inputReclamoPrv = document.getElementById("reclamo_proveedor");
       const setting = (data) => {
         const reclamo_proveedor = data
           ? data.reclamo_proveedor
@@ -997,7 +993,7 @@ class NoConformidades {
       };
       if (inputReclamoPrv.value === "") {
         inputReclamoPrv.value = "No";
-        inputReclamoPrv.classList.add('test')
+        inputReclamoPrv.classList.add("test");
       }
       setting(data);
       inputReclamoPrv.addEventListener("change", () => {
@@ -1010,9 +1006,14 @@ class NoConformidades {
       const completarImplementacion = document.querySelector(
         "#completarImplementacion"
       );
-      const inputReqAcc = document.querySelector("#requiere_acc");
-      const setting = (data) => {
-        const requiere_acc = data ? data.requiere_acc : inputReqAcc.value;
+      const completarVerificacion = document.querySelector(
+        "#completarVerificacion"
+      );
+      const inputReqAcc = document.getElementById("requiere_acc");
+      const setting = () => {
+        const requiere_acc = inputReqAcc.value
+          ? inputReqAcc.value
+          : data.requiere_acc;
         const parametros = [
           {
             IdInput: "justificacion_no_acc",
@@ -1061,18 +1062,18 @@ class NoConformidades {
           },
           {
             IdInput: "resultado_ef",
-            validation: requiere_acc != "Sí",
-            value: "No aplica",
+            validation: requiere_acc === "No" || data.status != "Verificada",
+            value: requiere_acc === "Sí" ? "" : "No aplica",
           },
           {
             IdInput: "comentario_ef",
-            validation: requiere_acc != "Sí",
-            value: "No aplica",
+            validation: requiere_acc === "No" || data.status != "Verificada",
+            value: requiere_acc === "Sí" ? "" : "No aplica",
           },
           {
             IdInput: "fecha_ef",
-            validation: requiere_acc != "Sí",
-            value: "1900-01-01",
+            validation: requiere_acc === "No" || data.status != "Verificada",
+            value: requiere_acc === "Sí" ? "" : "1900-01-01",
           },
         ];
         parametros.map((item) => this.settingInputs(item));
@@ -1082,7 +1083,7 @@ class NoConformidades {
         );
         completarImplementacion.checked = requiere_acc != "Sí";
       };
-      setting(data);
+      setting();
       inputReqAcc.addEventListener("change", () => {
         setting();
       });
@@ -1119,21 +1120,6 @@ class NoConformidades {
           validation: completarImplementacion.checked,
           value: "",
         },
-        {
-          IdInput: "resultado_ef",
-          validation: completarImplementacion.checked,
-          value: "",
-        },
-        {
-          IdInput: "comentario_ef",
-          validation: completarImplementacion.checked,
-          value: "",
-        },
-        {
-          IdInput: "fecha_ef",
-          validation: completarImplementacion.checked,
-          value: "",
-        },
       ];
       parametros.map((item) => this.settingInputs(item));
     };
@@ -1149,9 +1135,9 @@ class NoConformidades {
     }
   }
   async handleCliente(data) {
-    const inputID_Cliente = document.querySelector("#id_cliente");
+    const inputID_Cliente = document.getElementById("id_cliente");
     const setting = async (data) => {
-      const input = document.querySelector("#razon_social");
+      const input = document.getElementById("razon_social");
       const id_cliente = data ? data.id_cliente : inputID_Cliente.value;
       if (id_cliente != "0" && id_cliente != "") {
         const cliente = await DataClients.getClient(id_cliente);
@@ -1178,11 +1164,10 @@ class NoConformidades {
   }
   async handleProveedor(data) {
     if (data) {
-      const inputID_Proveedor = document.querySelector("#id_prov");
+      const inputID_Proveedor = document.getElementById("id_prov");
       const setting = async (data) => {
-        const input = document.querySelector("#razon_social_prov");
+        const input = document.getElementById("razon_social_prov");
         const id_prov = data ? data.id_prov : inputID_Proveedor.value;
-        console.log(id_prov);
         if (id_prov != "0" && id_prov != "") {
           const prov = await DataClients.getClient(id_prov);
           if (prov) {
@@ -1198,6 +1183,7 @@ class NoConformidades {
       inputID_Proveedor.addEventListener("change", (event) => {
         const valid = event.target.value != "0" && event.target.value != "";
         if (valid) {
+          console.log("po");
           setting();
         } else {
           window.alert("Ingrese un valor válido");
@@ -1205,13 +1191,72 @@ class NoConformidades {
       });
     }
   }
+  handleTipoContencion(data) {
+    const inputTipo_contencion = document.getElementById("tipo_contencion");
+    const setting = (data) => {
+      const tipo_contencion = data
+        ? data.tipo_contencion
+        : inputTipo_contencion.value;
+      this.settingInputs({
+        IdInput: "contencion",
+        validation: tipo_contencion != "Otra",
+        value: "No aplica",
+      });
+    };
+    if (data) {
+      const contencion = document.getElementById("contencion");
+      const info = document.querySelector(".info-contencion");
+      if (data.contencion === "A definir por responsable") {
+        data.contencion = "";
+        info.innerHTML =
+          "Esta sección debe ser completada por quien gestiona la no conformidad, ya que en <strong>el reporte inicial no se proporcionó</strong> una contención. Si se ha aplicado alguna medida para controlar temporalmente el desvío, por favor, indíquela aquí";
+      } else {
+        info.innerHTML = "";
+      }
+    }
+    inputTipo_contencion.addEventListener("change", () => {
+      setting();
+    });
+  }
+  handleVerificacion(data) {
+    if (data) {
+      const verif = data.status != "Ejecutada" && data.status != "Verificada"
+      const completarVerificacion = document.getElementById("completarVerificacion");
+      completarVerificacion.toggleAttribute("disabled",verif); //Desabilita boton para agregar verificación si no esta en es status correcto.
+      const setting = (verificacion) => {
+        const parametros = [
+          {
+            IdInput: "resultado_ef",
+            validation: verificacion,
+            value: "",
+          },
+          {
+            IdInput: "comentario_ef",
+            validation: verificacion,
+            value: "",
+          },
+          {
+            IdInput: "fecha_ef",
+            validation: verificacion,
+            value: "",
+          },
+        ];
+        parametros.map((item) => this.settingInputs(item));
+      };
+      completarVerificacion.addEventListener('change' , (event) => {
+        const check = !event.target.checked;
+        setting(check)
+      })
+    }
+    
+  }
   settingInputs(props) {
     const input = document.querySelector(`#${props.IdInput}`);
     if (input) {
       input.toggleAttribute("disabled", props.validation);
       if (!props.data) {
         input.value = props.validation ? props.value : "";
-        input.classList.toggle('test', props.validation)
+        input.classList.toggle("test", props.validation);
       }
     }
   }

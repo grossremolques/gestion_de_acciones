@@ -35,11 +35,10 @@ class Oportunidad extends ApiServices {
       console.log(e)
     }
   }
-  async hasPermission() {
+  async typePermission(alias) {
     try{
-      const response = await this.getDataInJSON()
-      const legajo = await DataEmployees.getLegajo();
-      return response.some(item => item.legajo === legajo)
+      const response = await this.getDataInJSON();
+      return response.find(item => item.alias === alias)
     }
     catch(e) {
       console.log(e)
@@ -54,5 +53,6 @@ const Attributes = new Oportunidad({
   rowHead: 1,
 });
 const DataOportunidad = new Oportunidad({ sheetId: SheetId, nameSheet: "Registro", rowHead: 1 });
-const DataResponsable = new Oportunidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
-export { DataOportunidad, Attributes, DataResponsable };
+//const DataResponsable = new Oportunidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
+//const DataPermisos = new Oportunidad({ sheetId: SheetId, nameSheet: "Permisos", rowHead: 1 });
+export { DataOportunidad, Attributes};

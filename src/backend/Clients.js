@@ -31,14 +31,14 @@ class Clients extends ApiServices {
     }
   }
   async handleFindClient(idForm = 'formSell') {
-    const input = document.querySelector("#cliente");
+    const input = document.getElementById("cliente");
     const formSell = document.querySelector(`#${idForm}`);
     input.addEventListener("change", async () => {
       try {
         const client = await this.getClient(input.value);
         if (!client || isEmptyObjet(client)) {
           window.alert("🚨🚨 Cliente no encontrado 😟");
-          const arr = [document.querySelector('#cuit'),document.querySelector('#razon_social')];
+          const arr = [document.getElementById('cuit'),document.getElementById('razon_social')];
           arr.map(item => {
             if(item) {
               item.value = ''

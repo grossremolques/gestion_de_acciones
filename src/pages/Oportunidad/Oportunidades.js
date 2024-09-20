@@ -5,12 +5,13 @@ import {
   selectComponent,
 } from "@components/Form";
 import Table from "@components/Table";
-import { DataNoConformidad, Attributes } from "@backend/NoConfomidad";
 import DataEmployees from "@backend/Employees";
-import IconReject from "@icons/rechazado.png";
 import { permissions } from "@utils/Tools";
+import { DataOportunidad, Attributes } from "@backend/Oportunidad";
+import IconMejora from '@icons/mejora.png'
 
-let TableTrailers;
+
+let TableOportunidades;
 let previousButton;
 let nextButton;
 let filterButton;
@@ -29,18 +30,7 @@ const formFilter = async () => {
         className: "filter",
         placeholder: "Id",
         id: "id",
-        sizes: "sm",
-      })}
-      ${selectComponent({
-        col: "auto",
-        mdCol: "auto",
-        xlCol: "auto",
-        id: "tipo_desvio",
-        name: "tipo_desvio",
-        placeholder: "Tipo de desvío",
-        data: attributes,
-        textNode: "tipo_desvio",
-        className: "filter",
+        name: "id",
         sizes: "sm",
       })}
       ${selectComponent({
@@ -58,8 +48,8 @@ const formFilter = async () => {
       ${inputComponent({
         type: "text",
         className: "filter",
-        placeholder: "Desvío",
-        id: "desvio",
+        placeholder: "Aspecto/Detalle de la mejora o riesgo",
+        id: "aspecto",
         sizes: "sm",
       })}
       ${selectComponent({
@@ -113,31 +103,29 @@ const formFilter = async () => {
 const columns = {
   id: "Id",
   registrado_por: "Registrado por",
-  tipo_desvio: "Tipo",
-  desvio: "Desvio",
+  aspecto: "Aspecto",
   responsable: "Responsable",
   status: "Status",
 };
-const NoConformidades = async (content) => {
-  
-  const data = await DataNoConformidad.getDataInJSON();
+const Oportunidades = async (content) => {
+  const data = await DataOportunidad.getDataInJSON();
   const permissionsUser = await permissions();
   const codigo_permisos = permissionsUser ? Number(permissionsUser.num) : 0;
   if (codigo_permisos > 0) {
     let newData
     newData = codigo_permisos < 2 ? data.filter(item => item.registrado_por === permissionsUser.alias || item.responsable === permissionsUser.alias) : data;
-    TableTrailers = new Table({
+    TableOportunidades = new Table({
       columns: columns,
       data: newData.reverse(),
       attrId: "id",
     });
     const view = `
     ${MainTitle({
-      title: "Listado de <em>Salidas No Conformes</em>",
-      urlIcon: IconReject,
+      title: "Listado de <em>Oportunidades y Riesgos</em>",
+      urlIcon: IconMejora,
     })}
     ${await formFilter()}
-    ${TableTrailers.createTable()}
+    ${TableOportunidades.createTable()}
     `;
     content.innerHTML = view;
     previousButton = document.getElementById("previous");
@@ -151,17 +139,17 @@ const NoConformidades = async (content) => {
     filterButton.addEventListener("click", handleFilterButton);
     addButton.addEventListener(
       "click",
-      () => (location.hash = "/add-no-confomidad")
+      () => (location.hash = "/add-oportunidad")
     );
   }
   else {location.hash = "/no-permissions"}
 };
 const handlePreviousButton = () => {
-  TableTrailers.previousButton();
+  TableOportunidades.previousButton();
   activeListenerRows();
 };
 const handleNextButton = () => {
-  TableTrailers.nextButton();
+  TableOportunidades.nextButton();
   activeListenerRows();
 };
 const handleFilterButton = () => {
@@ -170,16 +158,19 @@ const handleFilterButton = () => {
   itemsFilter.forEach((item) => {
     valuesFilter[item.id] = item.value;
   });
-  TableTrailers.filterButton(valuesFilter);
+  TableOportunidades.filterButton(valuesFilter);
   activeListenerRows();
 };
 const handleEditData = (event) => {
   const id = event.target.parentNode.id;
-  location.hash = `/no-conformidad=${id}/`;
+  location.hash = `/oportunidad=${id}/`;
 };
 const activeListenerRows = () => {
   document
     .querySelectorAll(".row-table")
     .forEach((row) => row.addEventListener("click", handleEditData));
 };
-export default NoConformidades;
+async function test() {
+  const data = await DataEmployees.getDataInJSON()
+}
+export default Oportunidades;

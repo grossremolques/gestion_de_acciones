@@ -11,6 +11,44 @@ tbody {
         color: blue;
       }
     }
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &.trucate-desvio {
+        max-width: 400px;
+      }
+      &.trucate-aspecto {
+        max-width: 400px;
+      }
+      &.trucate-tipo_devio {
+        max-width: 200px;
+      }
+      &[data-value="Pendiente"] {
+        @extend .bg-danger-subtle;
+        @extend .text-danger-emphasis       
+      }
+      &[data-value="Pendiente [cliente]"] {
+        @extend .bg-warning-subtle;
+        @extend .text-warning-emphasis    
+      }
+      &[data-value="Cerrada"] {
+        @extend .bg-primary-subtle;      
+      }
+      &[data-value="Verificada"] {
+        @extend .bg-success;    
+        @extend .text-white      
+      }
+      &[data-value="Anulada"] {
+        @extend .bg-secondary;
+        @extend .text-white      
+      }
+      &[data-value="Planificada"] {
+        @extend .bg-info-subtle;
+        @extend .text-info-emphasis     
+      }
+    }
+    
   }
 }
 #formCliente {
@@ -265,4 +303,3 @@ footer.home {
     color: white;
   }
 }
-

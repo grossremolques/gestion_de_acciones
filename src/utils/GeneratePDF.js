@@ -3,7 +3,7 @@ import logoGross from "@iconslogo_gross.png";
 import logoISO from "@iconslogo_iso9001.png";
 import { Modelos } from "../backend/Trailers";
 const createPDF = (html) => {
-  const frame = document.querySelector("#frame");
+  const frame = document.getElementById("frame");
   const doc = new jsPDF("p", "pt", "legal");
   const margin = 30;
   doc.html(html, {

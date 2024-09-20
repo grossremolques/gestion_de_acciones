@@ -68,9 +68,11 @@ class Table {
             <tr id="${row[this.attrId]}" class = "row-table">
                 ${items
                   .map(
-                    (cell) => `
-                    <td>${row[cell] === undefined ? "" : row[cell]}</td>
-                `
+                    (cell) => {
+                      
+                      return `
+                    <td class="trucate-${cell}" ${cell==='status' ? `data-value="${row[cell]}"` : ''}>${row[cell] === undefined ? "" : row[cell]}</td>
+                `}
                   )
                   .join("")}
             </tr>            
@@ -82,12 +84,12 @@ class Table {
   }
   insertRows() {
     this.tbody = document.querySelector("tbody");
-    this.nextBtn = document.querySelector("#next");
-    this.previousBtn = document.querySelector("#previous");
+    this.nextBtn = document.getElementById("next");
+    this.previousBtn = document.getElementById("previous");
     this.indexEnd = this.indexStart + this.numItemByPage;
     this.tbody.innerHTML = this.createRows();
-    document.querySelector("#activePage").innerHTML = this.activePage;
-    document.querySelector("#numOfPage").innerHTML = this.numOfPages;
+    document.getElementById("activePage").innerHTML = this.activePage;
+    document.getElementById("numOfPage").innerHTML = this.numOfPages;
     this.previousBtn.classList.toggle("disabled", this.activePage <= 1);
     this.nextBtn.classList.toggle(
       "disabled",

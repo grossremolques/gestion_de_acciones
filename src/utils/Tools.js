@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import DataEmployees from "@backend/Employees";
+import { DataPermisos } from "@backend/NoConfomidad";
+
 const loadInputsById = (data, form, disabled) => {
   convertGroupDates(data,'es-en')
   for (let item in data) {
@@ -134,6 +137,21 @@ const convertGroupDates = (obj,type) => {
   }
   return obj
 }
+const permissions = async () => {
+  const user = await DataEmployees.getActiveUser()
+  if(user) {const typePermission = await DataPermisos.typePermission(user.alias)
+  return typePermission}
+}
+const settingInputs = (props) => {
+  const input = document.querySelector(`#${props.IdInput}`);
+  if (input) {
+    input.toggleAttribute("disabled", props.validation);
+    if (!props.data) {
+      input.value = props.validation ? props.value : "";
+      input.classList.toggle("test", props.validation);
+    }
+  }
+}
 const today = dayjs(new Date(),'YYYY-DD-MM').format('YYYY-MM-DD')
 
 export {
@@ -153,5 +171,7 @@ export {
   convertDate,
   convertGroupDates,
   today,
-  getDataForm
+  getDataForm,
+  permissions,
+  settingInputs
 };

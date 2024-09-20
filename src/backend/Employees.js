@@ -80,6 +80,17 @@ class Employees extends ApiServices {
       console.log(e);
     }
   }
+  async handleUser(data) {
+    if (!data) {
+      try {
+        const user = await this.getActiveUser();
+        const input = document.getElementById("registrado_por");
+        input.value = user.alias;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
 }
 const DataEmployees = new Employees({
   sheetId: SheetId,

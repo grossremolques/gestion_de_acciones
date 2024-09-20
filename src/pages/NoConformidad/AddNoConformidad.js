@@ -5,10 +5,10 @@ import { getDataFormValid, isEmptyObjet} from "@utils/Tools";
 import { buttonComponent } from "@components/Form";
 import DataEmployees from "@backend/Employees";
 import IconReject from '@icons/rechazado.png'
+import Notificaciones from "@backend/Notificaciones";
 const template = new NoConformidades()
-let ID
 let form
-
+const email = new Notificaciones()
 const AddNoConfomidad = async (content) => {
     const view = `
       ${MainTitle({title:'Nueva No conformidad', urlIcon: IconReject})}
@@ -27,10 +27,10 @@ const AddNoConfomidad = async (content) => {
       </div>
     `
     content.innerHTML = view;
-    form = document.querySelector('#formNC')
+    form = document.getElementById('formNC')
     await template.setting()
 
-    const saveButton = document.querySelector("#saveButton");
+    const saveButton = document.getElementById("saveButton");
     saveButton.addEventListener("click", handleSave);
     //
 }
@@ -39,24 +39,29 @@ const handleSave = async (event) => {
   if(!isEmptyObjet(data)) {
     template.modal.saving()
     try {
-      const responsable = await DataEmployees.getEmployeesByAlias(data.responsable)
-      const fullName = responsable.fullName;
+      data.infoResponsable = await DataEmployees.getEmployeesByAlias(data.responsable)
+      data.infoCreator = await DataEmployees.getEmployeesByAlias(data.registrado_por)
       const response = await DataNoConformidad.postCustumize(data);
       if (response && response.status === 200) {
-        const text = template.responsableByDefault ? 'La gestión de la misma será evaluada y determinada por' : 'El responsable de su gestión es'
+        data['id'] = response.result.updates.updatedData.values[0][0]
+        const responseEmail = await email.alta(data);
+        const textEmail = responseEmail.status === 200 ? 'Se ha notificado por email ✅' : 'Hubo un problema en su notificación por email ❌'
+        
+        const text = template.responsableByDefault ? 'La gestión de la misma será <u>evaluada y determinada</u> por' : 'El responsable de su gestión es'
         template.modal.create({
           title: "✔️ Completado",
           content: `
           <p class="text-center">La no conformidad ha sido ingresada.
-          <br>${text} <strong>${fullName}</strong>
+          <br>${text} <strong>${data.infoResponsable.fullName}</strong>
+          <br>📧 ${textEmail}
           </p>`,
         });
+        
       }
     } catch (e) {
       console.log(e);
     }
 
   }
-  console.log(data)
 }
 export default AddNoConfomidad
