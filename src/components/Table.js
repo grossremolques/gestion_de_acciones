@@ -14,6 +14,7 @@ class Table {
     this.isFiltered = false;
     this.dataFilter;
     this.attrId = props.attrId;
+    this.title = props.title
   }
   createTable() {
     const view = `
@@ -67,13 +68,13 @@ class Table {
             (row) => `
             <tr id="${row[this.attrId]}" class = "row-table">
                 ${items
-                  .map(
-                    (cell) => {
-                      
-                      return `
-                    <td class="trucate-${cell}" ${cell==='status' ? `data-value="${row[cell]}"` : ''}>${row[cell] === undefined ? "" : row[cell]}</td>
-                `}
-                  )
+                  .map((cell) => {
+                    return `
+                    <td class="trucate-${cell}" ${
+                      cell === "status" ? `data-value="${row[cell]}"` : ""
+                    } ${this.title ? `title="${row[this.title]}"` : ''}>${row[cell] === undefined ? "" : row[cell]}</td>
+                `;
+                  })
                   .join("")}
             </tr>            
             `
@@ -121,6 +122,29 @@ class Table {
     }
     this.isFiltered = true;
     this.insertRows();
+    this.interfaceInfoFilter(valuesFilter)
+  }
+  interfaceInfoFilter(valuesFilter) {
+    const colors = ['primary','secondary', 'success', 'danger', 'warning', 'info', 'light'];
+    const applyFilters = document.getElementById('info-filtersApply');
+    const arrFilter = Object.entries(valuesFilter);
+    const viewFilter = arrFilter.map(item => {
+    const getRandomColor = (max) => {
+      return Math.floor(Math.random() * max)
+    }
+    if(item[1]!='') {
+      return `<small>${item[0][0].toLocaleUpperCase()+item[0].slice(1).replaceAll("_"," ")}: </small><span class="badge text-bg-${colors[getRandomColor(colors.length)]}">${item[1]}</span> `
+    }
+  }).join('')
+  applyFilters.innerHTML = viewFilter
+  const totalFilter = document.getElementById('totalFilter');
+  if(totalFilter) {
+    totalFilter.textContent = `Total: ${this.dataFilter.length}`
+  }
+  else {
+    applyFilters.parentElement.insertAdjacentHTML('beforeend',`<span class="badge text-bg-dark float-end" id="totalFilter">Total: ${this.dataFilter.length}</span>`)
+  }
+  
   }
   normalizeString(str) {
     return str

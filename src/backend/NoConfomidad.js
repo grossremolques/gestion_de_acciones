@@ -15,27 +15,37 @@ class NoConformidad extends ApiServices {
   async createId() {
     try {
       const response = await this.getDataInJSON();
-      const ids = response.map(item => {
-        const num = Number(item.id);
-        return Number.isNaN(num) ? 0 : Number(item.id)
-      })
-      const lastId = Math.max(...ids)
-      return lastId +1
+      if(typeof response === 'object') {
+        const ids = response.map(item => {
+          const num = Number(item.id);
+          return Number.isNaN(num) ? 0 : Number(item.id)
+        })
+        const lastId = Math.max(...ids)
+        return lastId +1
+      }
     }
     catch(e) {
       console.log(e)
+      
     }
   }
   async postCustumize(data) {
     data['a_espera_cliente'] = 'No'
-    data['id'] = await this.createId()
     try {
-      const response = await this.postData(data);
-      return response
+      data['id'] = await this.createId()
+      if(typeof data.id === 'number'){
+        try {
+          const response = await this.postData(data);
+          return response
+        }
+        catch(e) {
+          console.log(e)
+        }
+      }
     }
     catch(e) {
       console.log(e)
-    }
+    }    
   }
   async getResponsableByType(type) {
     try {
@@ -64,7 +74,7 @@ const Attributes = new NoConformidad({
   nameSheet: "Otros Atributos",
   rowHead: 1,
 });
-const DataNoConformidad = new NoConformidad({ sheetId: SheetId, nameSheet: "Registro(TEST)", rowHead: 1 });
+const DataNoConformidad = new NoConformidad({ sheetId: SheetId, nameSheet: "Registro V.2", rowHead: 1 });
 const DataResponsable = new NoConformidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
 const DataPermisos = new NoConformidad({ sheetId: SheetId, nameSheet: "Permisos", rowHead: 3 });
 export { DataNoConformidad, Attributes, DataResponsable, DataPermisos };

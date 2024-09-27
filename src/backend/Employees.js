@@ -7,12 +7,15 @@ class Employees extends ApiServices {
   async getEmployees() {
     try {
       const response = await this.getDataInJSON();
-      const employees = response.map((item) => {
+      if (typeof response === 'object') {
+        const employees = response.map((item) => {
         item.fullName = `${item.apellido} ${item.nombre}`;
         return item;
       });
-      employees.push({fullName: 'No aplica', alias : 'No aplica'})
+      employees.push({ fullName: "No aplica", alias: "No aplica" });
       return employees;
+      }
+      
     } catch (e) {
       console.log(e);
     }
@@ -29,7 +32,7 @@ class Employees extends ApiServices {
           return 1;
         }
         return 0;
-      })
+      });
       return sort;
     } catch (e) {
       console.log(e);
@@ -38,7 +41,12 @@ class Employees extends ApiServices {
   async getResponsables() {
     try {
       const response = await this.sortEmployees();
-      const responsables = response.filter(item => item.email_empresa!='' && item.activo === 'Sí' && item.tipo_personal === 'INTERNO');
+      const responsables = response.filter(
+        (item) =>
+          item.email_empresa != "" &&
+          item.activo === "Sí" &&
+          item.tipo_personal === "INTERNO"
+      );
       return responsables;
     } catch (e) {
       console.log(e);
@@ -51,7 +59,7 @@ class Employees extends ApiServices {
       const user = response.find((item) => item.email_empresa === email);
       return user;
     } catch (e) {
-      console.log(e);
+      this.modal.error(e);
     }
   }
   async getLegajo() {
@@ -65,7 +73,7 @@ class Employees extends ApiServices {
   async getLegajoByAlias(alias) {
     try {
       const response = await this.getEmployees();
-      const employ = response.find(item => item.alias === alias)
+      const employ = response.find((item) => item.alias === alias);
       return employ.legajo;
     } catch (e) {
       console.log(e);
@@ -74,10 +82,12 @@ class Employees extends ApiServices {
   async getEmployeesByAlias(alias) {
     try {
       const response = await this.getEmployees();
-      const employ = response.find(item => item.alias === alias)
-      return employ;
+      if (typeof response === 'object') {
+        const employ = response.find((item) => item.alias === alias);
+        return employ;
+      }
     } catch (e) {
-      console.log(e);
+      this.modal.error(e);
     }
   }
   async handleUser(data) {

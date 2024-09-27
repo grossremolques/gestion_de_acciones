@@ -3,17 +3,50 @@ import NoConformidades from "@templates/NoConformidad";
 import { DataNoConformidad } from "@backend/NoConfomidad";
 import { permissions, getHash, loadInputsById, getDataFormValid, isEmptyObjet, today , listenerChangeEvent} from "@utils/Tools";
 import { buttonComponent } from "@components/Form";
-const template = new NoConformidades()
+import { DataSegProveedores } from "../../backend/SeguimientoProveedores";
+import ReclamoProveedor from "../../templates/ReclamoProveedor";
+const template = new ReclamoProveedor()
 let ID
 let form
 let hasInitDate
 
-const NoConfomidad = async (content) => {
-  const permissionsUser = await permissions();
+const SeguimientoProveedor = async (content) => {
+    ID = getHash().replace("seguimiento_proveedor=", "");
+    const data = await DataSegProveedores.getDataById(ID);
+    if(typeof data === 'object') {
+      console.log(data)  
+      const view = `
+        ${MainTitle({title:'Gestión de Reclamo a proveedor'})}
+        ${await template.form()} 
+        <hr>
+        <div class="row g-1 my-3">
+          ${buttonComponent({
+            type: "button",
+            color: "success",
+            id: "saveButton",
+            title: "Guardar",
+            col: "auto",
+            xlCol: "auto",
+            mdCol: "auto",
+          })}
+        </div>
+      `
+      
+      
+      content.innerHTML = view;
+      const forms = document.querySelectorAll('form')
+      forms.forEach(element => {
+        loadInputsById(data,element)
+      });
+      console.log(forms)
+      //loadInputsById(data,form)
+    }
+    
+  /* const permissionsUser = await permissions();
   const codigo_permisos = Number(permissionsUser.num)
   const canGestion = codigo_permisos > 0
-  ID = getHash().replace("no-conformidad=", "");
-  const nc = await DataNoConformidad.getNC(ID)
+  
+  
   const isCreator = nc.registrado_por === permissionsUser.alias
   const isResponse = nc.responsable === permissionsUser.alias
   const canSeeNC = canGestion && (isCreator || isResponse || codigo_permisos === 3)
@@ -45,7 +78,7 @@ const NoConfomidad = async (content) => {
   }
   else {
     location.hash = "/no-permissions"
-  }
+  } */
 }
 const handleSave = async (event) => {
   const data = getDataFormValid(event,form,'.change-save, .test')
@@ -78,4 +111,4 @@ const handleSave = async (event) => {
     }
   }
 }
-export default NoConfomidad
+export default SeguimientoProveedor

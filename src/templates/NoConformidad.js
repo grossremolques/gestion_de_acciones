@@ -21,7 +21,7 @@ import DataAreas from "../backend/Areas";
 import MyCustumeModal from "../components/MyCustumeModal";
 import { DataResponsable } from "@backend/NoConfomidad";
 import DataClients from "../backend/Clients";
-
+import DataProveedores from "../backend/Proveedores";
 let isNew;
 class NoConformidades {
   constructor() {
@@ -60,7 +60,7 @@ class NoConformidades {
     `;
     return view;
   }
-  async formInit() {
+  async formInit(isGestorProv) {
     isNew = true;
     const attributes = await Attributes.getDataInJSON();
     const employees = await DataEmployees.sortEmployees();
@@ -75,6 +75,17 @@ class NoConformidades {
       <div class="row g-1">
         ${await this.contencion(attributes)}
       </div>
+      
+      ${
+        isGestorProv
+          ? `
+        <div class="row g-1">
+        ${this.reclamoProveedor(attributes)}
+        </div>
+        `
+          : ""
+      }
+      
     </form>
     `;
     return view;
@@ -282,6 +293,7 @@ class NoConformidades {
           textNode: "fullName",
           value: "alias",
           required: true,
+          className: "test",
         })}
     </div>
     `;
@@ -411,6 +423,53 @@ class NoConformidades {
     `;
     return view;
   }
+  reclamoProveedor(attributes) {
+    const view = `
+    ${MiniSubTitle({
+      title: "Reclamo a proveedor",
+      urlIcon: IconProveedor,
+      mt: 2,
+      color: "body-secondary",
+    })}
+    ${selectComponent({
+      col: "auto",
+      mdCol: "auto",
+      xlCol: "auto",
+      nameLabel: "Reclamo a proveedor",
+      id: "reclamo_proveedor",
+      name: "reclamo_proveedor",
+      sizes: "sm",
+      data: attributes,
+      textNode: "si_no",
+      required: true,
+      className: "gestion",
+    })}
+    ${inputComponent({
+      col: "",
+      mdCol: "3",
+      xlCol: "2",
+      type: "number",
+      nameLabel: "ID Prov",
+      id: "id_prov",
+      name: "id_prov",
+      sizes: "sm",
+      required: true,
+      className: "gestion",
+    })}
+    ${inputComponent({
+      col: "12",
+      mdCol: "",
+      xlCol: "",
+      type: "text",
+      nameLabel: "Razón Social",
+      id: "razon_social_prov",
+      name: "razon_social_prov",
+      sizes: "sm",
+      readonly: true,
+    })}
+    `;
+    return view;
+  }
   async gestion(attributes) {
     const view = `
     ${SubTitle({ title: "Gestión", urlIcon: IconGestion, mt: 4 })}
@@ -460,48 +519,7 @@ class NoConformidades {
         })}
     </div>
     <div class="row g-1">
-        ${MiniSubTitle({
-          title: "Reclamo a proveedor",
-          urlIcon: IconProveedor,
-          mt: 2,
-          color: "body-secondary",
-        })}
-        ${selectComponent({
-          col: "auto",
-          mdCol: "auto",
-          xlCol: "auto",
-          nameLabel: "Reclamo a proveedor",
-          id: "reclamo_proveedor",
-          name: "reclamo_proveedor",
-          sizes: "sm",
-          data: attributes,
-          textNode: "si_no",
-          required: true,
-          className: "gestion",
-        })}
-        ${inputComponent({
-          col: "",
-          mdCol: "3",
-          xlCol: "2",
-          type: "number",
-          nameLabel: "ID Prov",
-          id: "id_prov",
-          name: "id_prov",
-          sizes: "sm",
-          required: true,
-          className: "gestion",
-        })}
-        ${inputComponent({
-          col: "12",
-          mdCol: "",
-          xlCol: "",
-          type: "text",
-          nameLabel: "Razón Social",
-          id: "razon_social_prov",
-          name: "razon_social_prov",
-          sizes: "sm",
-          readonly: true,
-        })}
+        ${this.reclamoProveedor(attributes)}
     </div>
     <div class="row g-1">  
         ${MiniSubTitle({
@@ -716,8 +734,8 @@ class NoConformidades {
     return view;
   }
   async setting(data) {
-    await DataEmployees.handleUser(data)
-    await DataAreas.getSectores(data)
+    await DataEmployees.handleUser(data);
+    await DataAreas.getSectores(data);
     this.handleTipoDesvio(data);
     this.handlePNC(data);
     this.handleReclamoCliente(data);
@@ -733,7 +751,7 @@ class NoConformidades {
     this.handleTipoContencion(data);
     this.handleVerificacion(data);
   }
-  
+
   handleTipoDesvio(data) {
     const inputTipo_desvio = document.getElementById("tipo_desvio");
     const setting = (data) => {
@@ -971,8 +989,8 @@ class NoConformidades {
     }
   }
   handleReclamoProveedor(data) {
-    if (data) {
-      const inputReclamoPrv = document.getElementById("reclamo_proveedor");
+    const inputReclamoPrv = document.getElementById("reclamo_proveedor");
+    if (inputReclamoPrv) {
       const setting = (data) => {
         const reclamo_proveedor = data
           ? data.reclamo_proveedor
@@ -1163,13 +1181,13 @@ class NoConformidades {
     });
   }
   async handleProveedor(data) {
-    if (data) {
       const inputID_Proveedor = document.getElementById("id_prov");
+      if (inputID_Proveedor) {
       const setting = async (data) => {
         const input = document.getElementById("razon_social_prov");
         const id_prov = data ? data.id_prov : inputID_Proveedor.value;
         if (id_prov != "0" && id_prov != "") {
-          const prov = await DataClients.getClient(id_prov);
+          const prov = await DataProveedores.getProveedor(id_prov);
           if (prov) {
             input.value = prov.razon_social;
           } else {
@@ -1183,7 +1201,6 @@ class NoConformidades {
       inputID_Proveedor.addEventListener("change", (event) => {
         const valid = event.target.value != "0" && event.target.value != "";
         if (valid) {
-          console.log("po");
           setting();
         } else {
           window.alert("Ingrese un valor válido");
@@ -1220,9 +1237,11 @@ class NoConformidades {
   }
   handleVerificacion(data) {
     if (data) {
-      const verif = data.status != "Ejecutada" && data.status != "Verificada"
-      const completarVerificacion = document.getElementById("completarVerificacion");
-      completarVerificacion.toggleAttribute("disabled",verif); //Desabilita boton para agregar verificación si no esta en es status correcto.
+      const verif = data.status != "Ejecutada" && data.status != "Verificada";
+      const completarVerificacion = document.getElementById(
+        "completarVerificacion"
+      );
+      completarVerificacion.toggleAttribute("disabled", verif); //Desabilita boton para agregar verificación si no esta en es status correcto.
       const setting = (verificacion) => {
         const parametros = [
           {
@@ -1243,12 +1262,11 @@ class NoConformidades {
         ];
         parametros.map((item) => this.settingInputs(item));
       };
-      completarVerificacion.addEventListener('change' , (event) => {
+      completarVerificacion.addEventListener("change", (event) => {
         const check = !event.target.checked;
-        setting(check)
-      })
+        setting(check);
+      });
     }
-    
   }
   settingInputs(props) {
     const input = document.querySelector(`#${props.IdInput}`);
@@ -1256,7 +1274,7 @@ class NoConformidades {
       input.toggleAttribute("disabled", props.validation);
       if (!props.data) {
         input.value = props.validation ? props.value : "";
-        input.classList.toggle("test", props.validation);
+        input.classList.add("test", props.validation);
       }
     }
   }

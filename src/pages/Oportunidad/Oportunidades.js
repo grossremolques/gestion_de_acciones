@@ -118,6 +118,7 @@ const Oportunidades = async (content) => {
       columns: columns,
       data: newData.reverse(),
       attrId: "id",
+      title: 'aspecto'
     });
     const view = `
     ${MainTitle({
@@ -125,6 +126,7 @@ const Oportunidades = async (content) => {
       urlIcon: IconMejora,
     })}
     ${await formFilter()}
+    <div class="mt-3">Filtros aplicados: <span id="info-filtersApply">Ninguno</span></div>
     ${TableOportunidades.createTable()}
     `;
     content.innerHTML = view;

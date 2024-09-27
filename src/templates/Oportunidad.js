@@ -86,8 +86,7 @@ class Oportunidades {
           sizes: "sm",
           readonly: true,
         })}
-        `
-          : ""
+        `: ""
       }
       ${selectComponent({
         col: "",

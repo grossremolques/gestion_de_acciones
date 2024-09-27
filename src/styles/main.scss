@@ -47,6 +47,13 @@ tbody {
         @extend .bg-info-subtle;
         @extend .text-info-emphasis     
       }
+      &[data-value="Finalizado"] {
+        @extend .bg-primary-subtle;
+      }
+      &[data-value="En curso"] {
+        @extend .bg-danger-subtle;
+        @extend .text-danger-emphasis     
+      }
     }
     
   }

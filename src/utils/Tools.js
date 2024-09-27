@@ -152,6 +152,21 @@ const settingInputs = (props) => {
     }
   }
 }
+
+const getFromLocalStorage = (form) => {
+  const data = JSON.parse(localStorage.getItem('formData') || {})
+  loadInputsById(data, form)
+}
+const dataJoin = (data1, data2, att1, att2) => {
+  data1.map((item) => {
+    data2.map(elem => {
+      if(item[att1] === elem[att2]) {
+        Object.assign(item, elem)
+      }
+    })
+  })
+  return data1
+}
 const today = dayjs(new Date(),'YYYY-DD-MM').format('YYYY-MM-DD')
 
 export {
@@ -173,5 +188,7 @@ export {
   today,
   getDataForm,
   permissions,
-  settingInputs
+  settingInputs,
+  getFromLocalStorage,
+  dataJoin
 };

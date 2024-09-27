@@ -1,4 +1,5 @@
 import { getColumnByKey, convertGroupDates } from "../utils/Tools";
+import MyCustumeModal from "../components/MyCustumeModal";
 import dayjs from "dayjs";
 class ApiServices {
   constructor(props) {
@@ -6,6 +7,7 @@ class ApiServices {
     this.sheetId = props.sheetId;
     this.range = `${props.nameSheet}!A1:ZZZ`;
     this.rowHead = props.rowHead;
+    this.modal = new MyCustumeModal(document.getElementById("modal"));
   }
   async getResponse() {
     try {
@@ -15,34 +17,36 @@ class ApiServices {
       });
       return response;
     } catch (e) {
-      if(e.status === 401) {
-        window.document.location.reload()
+      if (e.status === 401) {window.document.location.reload()} 
+      else if (e.status === 403) {
+        const message = `No tienes permisos para ver este archivo ${this.nameSheet} ${this.sheetId}`
+        this.modal.warning(message)
       }
-      else if(e.status === 403) {
-        console.warn(`No tienes permisos para ver este archivo ${this.nameSheet} ${this.sheetId}`)
+      else {
+        this.modal.error(e)
       }
-      console.log(e)
-      //401 Request had invalid authentication credentials.
-      console.error("Error in getResponse:", `🚫${e.status} ${e.result.error.message}`);
+      return e
     }
   }
   async getDataInJSON() {
     try {
       const response = await this.getResponse();
-      const data = response.result.values;
-      const headers = data[this.rowHead - 1]; // Obtenemos los encabezados del array
-      const newData = []; // Creamos un nuevo array para almacenar los objetos transformados
-      for (var i = 1; i < data.length; i++) {
-        // Iteramos desde 1 para evitar el primer elemento que son los encabezados
-        const obj = {};
-        // Iteramos a través de cada elemento del array actual
-        for (var j = 0; j < headers.length; j++) {
-          // Usamos los encabezados como claves y asignamos los valores correspondientes
-          obj[headers[j].toLowerCase()] = data[i][j];
+      if (response && response.status === 200) {
+        const data = response.result.values;
+        const headers = data[this.rowHead - 1]; // Obtenemos los encabezados del array
+        const newData = []; // Creamos un nuevo array para almacenar los objetos transformados
+        for (var i = 1; i < data.length; i++) {
+          // Iteramos desde 1 para evitar el primer elemento que son los encabezados
+          const obj = {};
+          // Iteramos a través de cada elemento del array actual
+          for (var j = 0; j < headers.length; j++) {
+            // Usamos los encabezados como claves y asignamos los valores correspondientes
+            obj[headers[j].toLowerCase()] = data[i][j];
+          }
+          newData.push(obj); // Agregamos el objeto al nuevo array
         }
-        newData.push(obj); // Agregamos el objeto al nuevo array
+        return newData; // Devolvemos el nuevo array de objetos
       }
-      return newData; // Devolvemos el nuevo array de objetos
     } catch (e) {
       console.error("getDataInJSON:", `🚫${e}`);
     }
@@ -50,8 +54,12 @@ class ApiServices {
   async postData(data) {
     const today = dayjs(new Date(), "YYYY-DD-MM");
     data.fecha = today.format("DD/MM/YYYY");
-    if(data.fecha === 'Invalid Date') {window.alert('¡Hubo un problema al registrar la fecha! ❌ Error: Invalid Date 🗓️')}
-    convertGroupDates(data,'en-es')
+    if (data.fecha === "Invalid Date") {
+      window.alert(
+        "¡Hubo un problema al registrar la fecha! ❌ Error: Invalid Date 🗓️"
+      );
+    }
+    convertGroupDates(data, "en-es");
     const headers = await this.getHeaders();
     const newData = this.convertData(data, headers);
     try {
@@ -77,9 +85,11 @@ class ApiServices {
   async getHeaders() {
     try {
       const response = await this.getResponse();
-      const data = response.result.values;
+      if (response && response.status === 200) {
+        const data = response.result.values;
       const headers = data[0];
       return headers.map((item) => item.toLocaleLowerCase());
+      }
     } catch (e) {
       console.error("Problems with getHeaders", e);
     }
@@ -96,10 +106,11 @@ class ApiServices {
     return headers;
   }
   async updateData(props) {
-    convertGroupDates(props.data,'en-es')
+    convertGroupDates(props.data, "en-es");
     let dataUpdate = [];
     try {
       const data = await this.getDataInJSON();
+      if (data && data.status === 200) {
       const index = data.findIndex((item) => item[props.colName] === props.id);
       if (index >= 0) {
         const row = index + this.rowHead + 1;
@@ -112,7 +123,7 @@ class ApiServices {
         }
         const dataPost = new Array();
         for (let item of dataUpdate) {
-          if(item.column>0){
+          if (item.column > 0) {
             dataPost.push({
               majorDimension: "ROWS",
               range: `${this.nameSheet}!R${item.row}C${item.column}`,
@@ -139,6 +150,7 @@ class ApiServices {
       } else {
         console.error("No se encontró la fila");
       }
+    }
     } catch (e) {
       console.log(e);
     }

@@ -37,9 +37,15 @@ class MyCustumeModal extends Modal {
     });
     this.disableCloseButtons();
   }
+  warning(message) {
+    this.create({
+      title: "⚠️ Advertencia",
+      content: `<p class="text-center">${message}</p>`,
+    });
+  }
   success(message) {
     this.create({
-      title: "✔️ Completado",
+      title: "✅ Completado",
       content: `<p class="text-center">${message}</p>`,
     });
   }
@@ -51,11 +57,30 @@ class MyCustumeModal extends Modal {
     this.disableCloseButtons();
   }
   error(e) {
+    const messageError = `
+        <ul>
+          <li>code: ${e.result.error.code}</li>
+          <li>message: ${e.result.error.message}</li>
+          <li>status: ${e.result.error.status}</li>
+        <ul>`
     this.create({
       title: "❌ Error",
       content: `
-        <p class="text-center">Hubo un problema, no se pudieron guardar los datos</p>
-        <code>${e}</code>
+        <p class="text-center">Hubo un problema</p>
+        <code>${messageError}</code>
+        `,
+    });
+  }
+  problems(message) {
+    const messageError = `
+        <p>
+          ${message}
+        <p>`
+    this.create({
+      title: "❌ Error",
+      content: `
+        <p class="text-center">Hubo un problema</p>
+        ${messageError}
         `,
     });
   }

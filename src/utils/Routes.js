@@ -9,6 +9,8 @@ import AddOportunidad from "@pages/Oportunidad/AddOportunidad";
 import NoPermisos from "../pages/NoPermisos";
 import Oportunidades from "@pages/Oportunidad/Oportunidades";
 import Oportunidad from "../pages/Oportunidad/Oportunidad";
+import SegProveedores from "../pages/ReclamoProveedores/SeguimientoProveedores";
+import SeguimientoProveedor from "../pages/ReclamoProveedores/SeguimientoProveedor";
 
 const routes = {
   "/": Home,
@@ -19,6 +21,8 @@ const routes = {
   "/no-permissions" : NoPermisos,
   "/oportunidades" : Oportunidades,
   "/oportunidad=:id": Oportunidad,
+  "/seguimiento_proveedores": SegProveedores,
+  "/seguimiento_proveedor=:id": SeguimientoProveedor,
 };
 const resolveRoutes = (route) => {
   if (route === undefined) {
@@ -29,6 +33,9 @@ const resolveRoutes = (route) => {
   }
   else if(route.startsWith('oportunidad=')) {
     route = "oportunidad=:id"
+  }
+  else if(route.startsWith('seguimiento_proveedor=')) {
+    route = "seguimiento_proveedor=:id"
   }
   return `/${route}`;
 };
