@@ -2,27 +2,30 @@ import {
   inputComponent,
   selectComponent,
   textarea,
-  options,
-} from "../components/Form";
-import { SubTitle, MiniSubTitle } from "../components/Titles";
-import IconFrom from "../assets/icons/checklist.png";
-import IconClient from "../assets/icons/client.png";
-import IconContencion from "../assets/icons/avoid-problem.png";
-import IconGestion from "../assets/icons/gestion.png";
-import IconCancelar from "../assets/icons/cancelado.png";
-import IconProveedor from "../assets/icons/supply-man.png";
-import IconProblemSolving from "../assets/icons/problem-solving.png";
-import IconImplemantacion from "../assets/icons/coordinador.png";
-import IconVerificacion from "../assets/icons/verificar.png";
-import IconPlanVrif from "../assets/icons/lupa.png";
-import { Attributes } from "../backend/NoConfomidad";
-import DataEmployees from "../backend/Employees";
-import DataAreas from "../backend/Areas";
-import MyCustumeModal from "../components/MyCustumeModal";
+} from "@components/Form";
+import { SubTitle, MiniSubTitle } from "@components/Titles";
+import IconFrom from "@icons/checklist.png";
+import IconClient from "@icons/client.png";
+import IconContencion from "@icons/avoid-problem.png";
+import IconGestion from "@icons/gestion.png";
+import IconCancelar from "@icons/cancelado.png";
+import IconProveedor from "@icons/supply-man.png";
+import IconProblemSolving from "@icons/problem-solving.png";
+import IconImplemantacion from "@icons/coordinador.png";
+import IconVerificacion from "@icons/verificar.png";
+import IconPlanVrif from "@icons/lupa.png";
+import { Attributes } from "@backend/NoConfomidad";
+import DataEmployees from "@backend/Employees";
+import DataAreas from "@backend/Areas";
+import MyCustumeModal from "@components/MyCustumeModal";
 import { DataResponsable } from "@backend/NoConfomidad";
-import DataClients from "../backend/Clients";
-import DataProveedores from "../backend/Proveedores";
+import DataClients from "@backend/Clients";
+import DataProveedores from "@backend/Proveedores";
+import { DataSegProveedores } from "@backend/SeguimientoProveedores";
+import Notificaciones from "@backend/Notificaciones";
+
 let isNew;
+const email = new Notificaciones();
 class NoConformidades {
   constructor() {
     this.modal = new MyCustumeModal(document.getElementById("modal"));
@@ -442,7 +445,6 @@ class NoConformidades {
       data: attributes,
       textNode: "si_no",
       required: true,
-      className: "gestion",
     })}
     ${inputComponent({
       col: "",
@@ -1276,6 +1278,50 @@ class NoConformidades {
         input.value = props.validation ? props.value : "";
         input.classList.add("test", props.validation);
       }
+    }
+  }
+  
+  async sendEmailToResponsable(data) {
+    try {
+      const sent = await email.altaNoConformidad(data);
+      return sent && sent.status === 200 
+    }
+    catch(e) {
+      console.log(e)
+    }
+  }
+  async handleReclamo(data) {
+    console.log(data.reclamo_proveedor)
+    const response = {}
+    const bd = await DataSegProveedores.getDataInJSON();
+    const hasInRegister = bd.some(item => item.id_nc === data.id_nc) 
+    if(!hasInRegister) {
+      const responseUpdate = await this.saveReclamo(data)
+      response['update'] = responseUpdate
+      if(responseUpdate){
+        const responseEmail = await this.sendEmailToCompras(data);
+        response['email'] = responseEmail
+      }
+    }
+    return response
+  }
+  
+  async saveReclamo(data){
+    try {
+      const response = await DataSegProveedores.postCustumize(data);
+      return response && response.status === 200
+    }
+    catch(e) {
+      console.log(e)
+    }
+  }
+  async sendEmailToCompras(data){
+    try {
+      const sent = await email.altaReclamoProveedor(data);
+      return sent && sent.status === 200
+    }
+    catch(e) {
+      console.log(e)
     }
   }
 }

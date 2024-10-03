@@ -6,6 +6,19 @@ class MyCustumeModal extends Modal {
     super(element, options);
   }
   create(props) {
+    document.querySelector('.modal-dialog').classList.remove('modal-lg')
+    document.querySelector('.modal-dialog').classList.remove('modal-dialog-scrollable')    
+    this.deleteButtonAction();
+    const buttons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+    buttons.forEach((elem) => elem.removeAttribute("disabled", ""));
+    document.getElementById("modalLabel").innerHTML = props.title;
+    document.querySelector(".modal-body").innerHTML = props.content;
+    this.actionCloseButton()
+    this.show();
+  }
+  createLargeModal(props) {
+    document.querySelector('.modal-dialog').classList.add('modal-lg')
+    document.querySelector('.modal-dialog').classList.add('modal-dialog-scrollable')
     this.deleteButtonAction();
     const buttons = document.querySelectorAll('[data-bs-dismiss="modal"]');
     buttons.forEach((elem) => elem.removeAttribute("disabled", ""));

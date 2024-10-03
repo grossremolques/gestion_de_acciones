@@ -10,23 +10,23 @@ import {
   selectGroup,
   textarea,
   options,
-} from "../components/Form";
-import { MainTitle, SubTitle, MiniSubTitle } from "../components/Titles";
-import IconFrom from "../assets/icons/checklist.png";
-import IconClient from "../assets/icons/client.png";
-import IconContencion from "../assets/icons/avoid-problem.png";
-import IconGestion from "../assets/icons/gestion.png";
-import IconCancelar from "../assets/icons/cancelado.png";
-import IconAnalisis from "../assets/icons/analisis.png";
-import IconPlanDeAccion from "../assets/icons/plan-de-accion.png";
-import IconImplemantacion from "../assets/icons/coordinador.png";
-import { DataOportunidad, Attributes } from "../backend/Oportunidad";
-import DataEmployees from "../backend/Employees";
-import DataAreas from "../backend/Areas";
-import MyCustumeModal from "../components/MyCustumeModal";
-import IconVerificacion from "../assets/icons/verificar.png";
-import IconPlanVrif from "../assets/icons/lupa.png";
-import { settingInputs } from "../utils/Tools";
+} from "@components/Form";
+import { MainTitle, SubTitle, MiniSubTitle } from "@components/Titles";
+import IconFrom from "@icons/checklist.png";
+import IconClient from "@icons/client.png";
+import IconContencion from "@icons/avoid-problem.png";
+import IconGestion from "@icons/gestion.png";
+import IconCancelar from "@icons/cancelado.png";
+import IconAnalisis from "@icons/analisis.png";
+import IconPlanDeAccion from "@icons/plan-de-accion.png";
+import IconImplemantacion from "@icons/coordinador.png";
+import { DataOportunidad, Attributes } from "@backend/Oportunidad";
+import DataEmployees from "@backend/Employees";
+import DataAreas from "@backend/Areas";
+import MyCustumeModal from "@components/MyCustumeModal";
+import IconVerificacion from "@icons/verificar.png";
+import IconPlanVrif from "@icons/lupa.png";
+import { settingInputs } from "@utils/Tools";
 
 let isNew;
 class Oportunidades {

@@ -86,7 +86,7 @@ class SegProveedores extends ApiServices {
 }
 const DataSegProveedores = new SegProveedores({
   sheetId: SheetId,
-  nameSheet: "Registro",
+  nameSheet: "Copia de Registro",
   rowHead: 1,
 });
 const AttributesSP = new SegProveedores({

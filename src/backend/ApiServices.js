@@ -1,6 +1,7 @@
 import { getColumnByKey, convertGroupDates } from "../utils/Tools";
 import MyCustumeModal from "../components/MyCustumeModal";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 class ApiServices {
   constructor(props) {
     this.nameSheet = props.nameSheet;
@@ -8,6 +9,7 @@ class ApiServices {
     this.range = `${props.nameSheet}!A1:ZZZ`;
     this.rowHead = props.rowHead;
     this.modal = new MyCustumeModal(document.getElementById("modal"));
+    this.today = dayjs(new Date(), "YYYY-DD-MM").format("YYYY-MM-DD");
   }
   async getResponse() {
     try {
@@ -52,8 +54,9 @@ class ApiServices {
     }
   }
   async postData(data) {
-    const today = dayjs(new Date(), "YYYY-DD-MM");
-    data.fecha = today.format("DD/MM/YYYY");
+    //const today = dayjs(new Date(), "YYYY-DD-MM").format("DD/MM/YYYY");
+    //console.log(today)
+    data.fecha = this.today;
     if (data.fecha === "Invalid Date") {
       window.alert(
         "¡Hubo un problema al registrar la fecha! ❌ Error: Invalid Date 🗓️"
@@ -106,11 +109,12 @@ class ApiServices {
     return headers;
   }
   async updateData(props) {
+    console.log(props)
     convertGroupDates(props.data, "en-es");
     let dataUpdate = [];
     try {
       const data = await this.getDataInJSON();
-      if (data && data.status === 200) {
+      if (typeof data === 'object') {
       const index = data.findIndex((item) => item[props.colName] === props.id);
       if (index >= 0) {
         const row = index + this.rowHead + 1;
