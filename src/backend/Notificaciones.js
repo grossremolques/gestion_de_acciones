@@ -137,7 +137,7 @@ class Notificaciones {
   }
   async altaReclamoProveedor(data) {
     try {
-      const infoComprador = await DataEmployees.getEmployeesByAlias('TEST');
+      const infoComprador = await DataEmployees.getEmployeesByAlias('MAMUL');
       const infoCreator = await DataEmployees.getEmployeesByAlias(data.registrado_por);
       if (typeof infoComprador === "object" && typeof infoCreator === "object") {
         const body = `

@@ -121,6 +121,7 @@ const columns = {
 const NoConformidades = async (content) => {
   
   const data = await DataNoConformidad.getDataInJSON();
+  const total = data.filter(item => item.responsable === '').length;
   const permissionsUser = await permissions();
   const codigo_permisos = permissionsUser ? Number(permissionsUser.num) : 0;
   if (codigo_permisos > 0) {
@@ -140,6 +141,11 @@ const NoConformidades = async (content) => {
     ${await formFilter()}
     <div class="mt-3">Filtros aplicados: <span id="info-filtersApply">Ninguno</span></div>
     ${TableTrailers.createTable()}
+    <div class="mt-5 mb-2 text-end">
+      <span class="badge text-bg-danger">Total NC Sin Responsable: </span>
+      <span class="badge text-bg-dark" id="total-sin-resp"></span>
+    </div>
+    
     `;
     content.innerHTML = view;
     previousButton = document.getElementById("previous");
@@ -155,6 +161,8 @@ const NoConformidades = async (content) => {
       "click",
       () => (location.hash = "/add-no-confomidad")
     );
+    const totalNC = document.getElementById('total-sin-resp')
+    totalNC.textContent = total 
   }
   else {location.hash = "/no-permissions"}
 };

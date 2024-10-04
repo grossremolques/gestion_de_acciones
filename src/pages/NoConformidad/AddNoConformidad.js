@@ -49,7 +49,7 @@ const handleSave = async (event) => {
       //Enviar por correo notificación
     }
     const infoResponsable = await DataEmployees.getEmployeesByAlias(data.responsable);
-    const infoComprador = await DataEmployees.getEmployeesByAlias('TEST');
+    const infoComprador = await DataEmployees.getEmployeesByAlias('MAMUL');
     template.modal.create({
       title: '📢 Notificación',
       content: `

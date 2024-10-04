@@ -140,7 +140,7 @@ class NoConformidades {
           required: true,
         })}
         ${selectComponent({
-          col: "6",
+          col: "12",
           mdCol: "",
           xlCol: "",
           nameLabel: "Sector",
