@@ -34,28 +34,24 @@ const formFilter = async () => {
         id: "id",
         sizes: "sm",
       })}
-      ${selectComponent({
-        col: "auto",
-        mdCol: "auto",
-        xlCol: "auto",
-        id: "tipo_desvio",
-        name: "tipo_desvio",
-        placeholder: "Tipo de desvío",
-        data: attributes,
-        textNode: "tipo_desvio",
+      ${inputComponent({
+        col: "1",
+        mdCol: 1,
+        xlCol: 1,
+        type: "text",
         className: "filter",
+        placeholder: "Producto",
+        id: "producto",
         sizes: "sm",
       })}
-      ${selectComponent({
-        col: "auto",
-        mdCol: "auto",
-        xlCol: "auto",
-        id: "registrado_por",
-        name: "registrado_por",
-        placeholder: "Registrado por",
-        data: employees,
-        textNode: "alias",
+      ${inputComponent({
+        col: "3",
+        mdCol: "3",
+        xlCol: "3",
+        type: "text",
         className: "filter",
+        placeholder: "Proveedor",
+        id: "razon_social",
         sizes: "sm",
       })}
       ${inputComponent({
@@ -63,18 +59,6 @@ const formFilter = async () => {
         className: "filter",
         placeholder: "Desvío",
         id: "desvio",
-        sizes: "sm",
-      })}
-      ${selectComponent({
-        col: "auto",
-        mdCol: "auto",
-        xlCol: "auto",
-        id: "responsable",
-        name: "responsable",
-        placeholder: "Responsable",
-        data: responsables,
-        textNode: "alias",
-        className: "filter",
         sizes: "sm",
       })}
       ${selectComponent({

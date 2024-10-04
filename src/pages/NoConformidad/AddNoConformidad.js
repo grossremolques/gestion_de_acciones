@@ -4,6 +4,7 @@ import { DataNoConformidad } from "@backend/NoConfomidad";
 import { getDataFormValid, isEmptyObjet, permissions } from "@utils/Tools";
 import { buttonComponent } from "@components/Form";
 import IconReject from "@icons/rechazado.png";
+import DataEmployees from '@backend/Employees'
 const template = new NoConformidades();
 let form;
 
@@ -47,17 +48,20 @@ const handleSave = async (event) => {
       response['reclamo'] = await template.handleReclamo(data)
       //Enviar por correo notificación
     }
+    const infoResponsable = await DataEmployees.getEmployeesByAlias(data.responsable);
+    const infoComprador = await DataEmployees.getEmployeesByAlias('TEST');
     template.modal.create({
       title: '📢 Notificación',
       content: `
       <ul class="list-group list-group-flush">
         <li class="list-group-item">${response.noConformidad.update ? '✅ Guardado exitosamente en <strong>no conformidades</strong>': '❌ Falló el registro del desvío'}</li>
-        <li class="list-group-item">${response.noConformidad.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${data.infoResponsable.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${data.infoResponsable.fullName}</strong>`}</li>
+        <li class="list-group-item">${response.noConformidad.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${infoResponsable.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${infoResponsable.fullName}</strong>`}</li>
         ${data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.update ? '✅ Guardado exitosamente en <strong>seguimiento a proveedores</strong>': '❌ Falló el registro del reclamo'}</li>`: ''}
-        ${data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${data.infoComprador.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${data.infoComprador.fullName}</strong>`}</li>`: ''}
+        ${data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${infoComprador.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${infoComprador.fullName}</strong>`}</li>`: ''}
       </ul>
       `
     })
+    location.hash = "/"
   }
 }
 const handleNoConformidad = async (data) => {

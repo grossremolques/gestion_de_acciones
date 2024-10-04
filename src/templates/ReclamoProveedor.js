@@ -3,21 +3,13 @@ import {
   inputComponent,
   buttonComponent,
   selectComponent,
-  dataListComponent,
-  button,
-  input,
-  label,
-  inputGroup,
-  selectGroup,
   textarea,
-  options,
 } from "@components/Form";
 import {
   AttributesSP,
-  DataSegProveedores,
 } from "@backend/SeguimientoProveedores";
 import { Attributes } from "@backend/NoConfomidad";
-import { SubTitle } from "@components/Titles";
+import { SubTitle, MiniSubTitle } from "@components/Titles";
 import { settingInputs } from "@utils/Tools";
 import IconComplaint from '@icons/complaint.png'
 import IconReport from '@icons/complaint-report.png'
@@ -138,7 +130,7 @@ class ReclamoProveedor {
           id: "nombre_yavu",
           name: "nombre_yavu",
           sizes: "sm",
-          readonly: true,
+          required: true,
         })}
         ${selectComponent({
           col: "12",
@@ -208,80 +200,96 @@ class ReclamoProveedor {
   }
   async gestion(attributes) {
     const view = `
-    <form class="row needs-validation g-1 mt-3 mx-auto border-card" novalidate id="formReclamoProveedor" style="max-width: 1000px">
-      <div class="row g-1"> 
-        ${selectComponent({
-          col: "3",
-          mdCol: "3",
-          xlCol: "3",
-          nameLabel: "Respuesta",
-          id: "respuesta",
-          name: "respuesta",
-          sizes: "sm",
-          data: attributes,
-          textNode: "respuesta",
-          required: true,
-        })}
-        ${selectComponent({
-          col: "3",
-          mdCol: "3",
-          xlCol: "3",
-          nameLabel: "Tiempo de respuesta a Reclamo",
-          id: "tiempo_respuesta_1",
-          name: "tiempo_respuesta_1",
-          sizes: "sm",
-          data: attributes,
-          textNode: "tiempo_respuesta_1",
-          required: true,
-        })}
+    <form class="row needs-validation g-2 my-3 mx-auto" novalidate id="formReclamoProveedor" style="max-width: 1000px">
+    ${SubTitle({ title: "Respuesta de proveedor" })}
+      <div class="col border-card me-3 px-2"> 
+        <div class="row g-1"> 
+        ${MiniSubTitle({ title: "Acción Correctiva", mt: 2 })}
+          ${selectComponent({
+            col: "12",
+            mdCol: "5",
+            xlCol: "5",
+            nameLabel: "Respuesta",
+            id: "respuesta",
+            name: "respuesta",
+            sizes: "sm",
+            data: attributes,
+            textNode: "respuesta",
+            required: true,
+          })}
+          ${selectComponent({
+            col: "12",
+            mdCol: "7",
+            xlCol: "7",
+            nameLabel: "Tiempo de respuesta a Reclamo",
+            id: "tiempo_respuesta_1",
+            name: "tiempo_respuesta_1",
+            sizes: "sm",
+            data: attributes,
+            textNode: "tiempo_respuesta_1",
+            required: true,
+          })}
+        </div>
+        <div class="row g-1"> 
+          ${selectComponent({
+            col: "12",
+            mdCol: "7",
+            xlCol: "7",
+            nameLabel: "Acc. Correctiva (Proveedor)",
+            id: "accion_correctiva_proveedor",
+            name: "accion_correctiva_proveedor",
+            sizes: "sm",
+            data: attributes,
+            textNode: "accion_correctiva_proveedor",
+            required: true,
+          })}
+          ${inputComponent({
+            col: "",
+            mdCol: "5",
+            xlCol: "5",
+            type: "date",
+            nameLabel: "Fecha Plazo",
+            id: "fecha_plazo_rec",
+            name: "fecha_plazo_rec",
+            sizes: "sm",
+            required: true,
+          })}
+        </div>
       </div>
-      <div class="row g-1">
-      ${selectComponent({
-        col: "12",
-        mdCol: "auto",
-        xlCol: "auto",
-        nameLabel: "Acc. Correctiva (Proveedor)",
-        id: "accion_correctiva_proveedor",
-        name: "accion_correctiva_proveedor",
-        sizes: "sm",
-        data: attributes,
-        textNode: "accion_correctiva_proveedor",
-        required: true,
-      })}
-      ${inputComponent({
-        col: "2",
-        mdCol: "2",
-        xlCol: "2",
-        type: "date",
-        nameLabel: "Fecha Plazo",
-        id: "fecha_plazo_rec",
-        name: "fecha_plazo_rec",
-        sizes: "sm",
-        required: true,
-      })}
-      ${inputComponent({
-        col: "2",
-        mdCol: "2",
-        xlCol: "2",
-        type: "date",
-        nameLabel: "Fecha Cierre",
-        id: "fecha_cierre_rec",
-        name: "fecha_cierre_rec",
-        sizes: "sm",
-        required: true,
-      })}
-      ${selectComponent({
-        col: "12",
-        mdCol: "auto",
-        xlCol: "auto",
-        nameLabel: "Tiempo de respuesta a Gestión",
-        id: "tiempo_respuesta_2",
-        name: "tiempo_respuesta_2",
-        sizes: "sm",
-        data: attributes,
-        textNode: "tiempo_respuesta_2",
-        required: true,
-      })}
+      <div class="col-4 border-card px-2 pb-2"> 
+        <div class="row g-1">
+          <div class="d-flex justify-content-between align-items-end mt-2">
+            ${MiniSubTitle({ title: "Cierre" })}
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" role="switch" id="completarRespuesta">
+              <label class="form-check-label small text-primary" for="completarRespuesta">Agregar</label>
+            </div>
+          </div>
+          
+          ${inputComponent({
+            col: "12",
+            mdCol: "12",
+            xlCol: "12",
+            type: "date",
+            nameLabel: "Fecha Cierre",
+            id: "fecha_cierre_rec",
+            name: "fecha_cierre_rec",
+            sizes: "sm",
+            required: true,
+          })}
+          ${selectComponent({
+            col: "12",
+            mdCol: "12",
+            xlCol: "12",
+            nameLabel: "Tiempo de respuesta a Gestión",
+            id: "tiempo_respuesta_2",
+            name: "tiempo_respuesta_2",
+            sizes: "sm",
+            data: attributes,
+            textNode: "tiempo_respuesta_2",
+            required: true,
+          })}
+        </div>
       </div>
       <div class="row g-1"> 
         ${buttonComponent({
@@ -289,7 +297,7 @@ class ReclamoProveedor {
           className: 'text-end',
           title: 'Actualizar datos de Seguimiento a Proveedores',
           sizes: 'sm',
-          color: 'outline-success',
+          color: 'success',
           id: 'update-sp'
         })}
       </div>
@@ -299,6 +307,7 @@ class ReclamoProveedor {
     return view;
   }
   settings(data) {
+    const check = document.getElementById('completarRespuesta');
     const disposicion = document.querySelector("#disposicion");
     disposicion.addEventListener("change", () => setDisposicion());
     const setDisposicion = () => {
@@ -329,10 +338,19 @@ class ReclamoProveedor {
         data: dataValue ? dataValue : ''
       });
     }
+    check.addEventListener('change', () => {
+      disableAC()
+    })
+    console.log(check)
+    const disableAC = () => {
+      document.getElementById('fecha_cierre_rec').toggleAttribute('disabled', check.checked === false)
+      document.getElementById('tiempo_respuesta_2').toggleAttribute('disabled', check.checked === false)
+    }
     setProducto(data.producto)
     setDisposicion()
+    disableAC()
   }
-  const 
+   
 }
 export default ReclamoProveedor;
 /* 

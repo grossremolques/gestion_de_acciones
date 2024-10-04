@@ -97,6 +97,7 @@ const handleSave = async (event) => {
         //Respuesta del "Responsable" ❌
         template.modal.problems('No se pudieron obtener los datos del "Responsable"')
       } 
+      location.hash = "/"
       
     } catch (e) {
       console.log(e);

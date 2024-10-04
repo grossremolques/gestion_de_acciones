@@ -7,15 +7,14 @@ class Employees extends ApiServices {
   async getEmployees() {
     try {
       const response = await this.getDataInJSON();
-      if (typeof response === 'object') {
+      if (typeof response === "object") {
         const employees = response.map((item) => {
-        item.fullName = `${item.apellido} ${item.nombre}`;
-        return item;
-      });
-      employees.push({ fullName: "No aplica", alias: "No aplica" });
-      return employees;
+          item.fullName = `${item.apellido} ${item.nombre}`;
+          return item;
+        });
+        employees.push({ fullName: "No aplica", alias: "No aplica" });
+        return employees;
       }
-      
     } catch (e) {
       console.log(e);
     }
@@ -24,16 +23,22 @@ class Employees extends ApiServices {
   async sortEmployees() {
     try {
       const response = await this.getEmployees();
-      const sort = response.sort((a, b) => {
-        if (a.apellido < b.apellido) {
-          return -1;
-        }
-        if (a.apellido > b.apellido) {
-          return 1;
-        }
-        return 0;
-      });
-      return sort;
+      if (typeof response === "object") {
+        const sort = response.sort((a, b) => {
+          if (a.apellido < b.apellido) {
+            return -1;
+          }
+          if (a.apellido > b.apellido) {
+            return 1;
+          }
+          return 0;
+        });
+        return sort;
+      }
+      else {
+        console.error(response)
+        this.modal.error(response)
+      }
     } catch (e) {
       console.log(e);
     }
@@ -82,7 +87,7 @@ class Employees extends ApiServices {
   async getEmployeesByAlias(alias) {
     try {
       const response = await this.getEmployees();
-      if (typeof response === 'object') {
+      if (typeof response === "object") {
         const employ = response.find((item) => item.alias === alias);
         return employ;
       }

@@ -74,7 +74,7 @@ const Attributes = new NoConformidad({
   nameSheet: "Otros Atributos",
   rowHead: 1,
 });
-const DataNoConformidad = new NoConformidad({ sheetId: SheetId, nameSheet: "Registro V.2", rowHead: 1 });
+const DataNoConformidad = new NoConformidad({ sheetId: SheetId, nameSheet: "Registro", rowHead: 1 });
 const DataResponsable = new NoConformidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
 const DataPermisos = new NoConformidad({ sheetId: SheetId, nameSheet: "Permisos", rowHead: 3 });
 export { DataNoConformidad, Attributes, DataResponsable, DataPermisos };

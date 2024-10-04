@@ -70,6 +70,7 @@ class MyCustumeModal extends Modal {
     this.disableCloseButtons();
   }
   error(e) {
+    console.log(e)
     const messageError = `
         <ul>
           <li>code: ${e.result.error.code}</li>

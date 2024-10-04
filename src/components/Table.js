@@ -14,7 +14,7 @@ class Table {
     this.isFiltered = false;
     this.dataFilter;
     this.attrId = props.attrId;
-    this.title = props.title
+    this.title = props.title;
   }
   createTable() {
     const view = `
@@ -72,7 +72,9 @@ class Table {
                     return `
                     <td class="trucate-${cell}" ${
                       cell === "status" ? `data-value="${row[cell]}"` : ""
-                    } ${this.title ? `title="${row[this.title]}"` : ''}>${row[cell] === undefined ? "" : row[cell]}</td>
+                    } ${this.title ? `title="${row[this.title]}"` : ""}>${
+                      row[cell] === undefined ? "" : row[cell]
+                    }</td>
                 `;
                   })
                   .join("")}
@@ -113,44 +115,68 @@ class Table {
     this.dataFilter = this.data;
     for (let key in valuesFilter) {
       this.dataFilter = this.dataFilter.filter((item) => {
-        if (item[key]) {
+        try {
           return this.normalizeString(item[key]).includes(
             this.normalizeString(valuesFilter[key])
           );
+        }
+        catch(e) {
+          console.warn(e)
         }
       });
     }
     this.isFiltered = true;
     this.insertRows();
-    this.interfaceInfoFilter(valuesFilter)
+    this.interfaceInfoFilter(valuesFilter);
   }
   interfaceInfoFilter(valuesFilter) {
-    const colors = ['primary','secondary', 'success', 'danger', 'warning', 'info', 'light'];
-    const applyFilters = document.getElementById('info-filtersApply');
+    const colors = [
+      "primary",
+      "secondary",
+      "success",
+      "danger",
+      "warning",
+      "info",
+      "light",
+    ];
+    const applyFilters = document.getElementById("info-filtersApply");
     const arrFilter = Object.entries(valuesFilter);
-    const viewFilter = arrFilter.map(item => {
-    const getRandomColor = (max) => {
-      return Math.floor(Math.random() * max)
+    const viewFilter = arrFilter
+      .map((item) => {
+        const getRandomColor = (max) => {
+          return Math.floor(Math.random() * max);
+        };
+        if (item[1] != "") {
+          return `<small>${
+            item[0][0].toLocaleUpperCase() +
+            item[0].slice(1).replaceAll("_", " ")
+          }: </small><span class="badge text-bg-${
+            colors[getRandomColor(colors.length)]
+          }">${item[1]}</span> `;
+        }
+      })
+      .join("");
+    applyFilters.innerHTML = viewFilter;
+    const totalFilter = document.getElementById("totalFilter");
+    if (totalFilter) {
+      totalFilter.textContent = `Total: ${this.dataFilter.length}`;
+    } else {
+      applyFilters.parentElement.insertAdjacentHTML(
+        "beforeend",
+        `<span class="badge text-bg-dark float-end" id="totalFilter">Total: ${this.dataFilter.length}</span>`
+      );
     }
-    if(item[1]!='') {
-      return `<small>${item[0][0].toLocaleUpperCase()+item[0].slice(1).replaceAll("_"," ")}: </small><span class="badge text-bg-${colors[getRandomColor(colors.length)]}">${item[1]}</span> `
-    }
-  }).join('')
-  applyFilters.innerHTML = viewFilter
-  const totalFilter = document.getElementById('totalFilter');
-  if(totalFilter) {
-    totalFilter.textContent = `Total: ${this.dataFilter.length}`
-  }
-  else {
-    applyFilters.parentElement.insertAdjacentHTML('beforeend',`<span class="badge text-bg-dark float-end" id="totalFilter">Total: ${this.dataFilter.length}</span>`)
-  }
-  
   }
   normalizeString(str) {
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+    try {
+      const newStr = str === undefined ? '' : str
+        return newStr
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    } catch (e) {
+      console.log(str, e);
+    }
   }
 }
 export default Table;

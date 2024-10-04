@@ -1280,7 +1280,7 @@ class NoConformidades {
       }
     }
   }
-  
+
   async sendEmailToResponsable(data) {
     try {
       const sent = await email.altaNoConformidad(data);
@@ -1291,7 +1291,6 @@ class NoConformidades {
     }
   }
   async handleReclamo(data) {
-    console.log(data.reclamo_proveedor)
     const response = {}
     const bd = await DataSegProveedores.getDataInJSON();
     const hasInRegister = bd.some(item => item.id_nc === data.id_nc) 

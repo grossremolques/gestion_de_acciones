@@ -1,8 +1,6 @@
 import { MainTitle, SubTitle } from "@components/Titles";
-import NoConformidades from "@templates/NoConformidad";
 import { DataNoConformidad } from "@backend/NoConfomidad";
-import { permissions, getHash, loadInputsById, getDataFormValid, isEmptyObjet, today , listenerChangeEvent} from "@utils/Tools";
-import { buttonComponent } from "@components/Form";
+import { permissions, getHash, loadInputsById, getDataFormValid, isEmptyObjet, listenerChangeEvent} from "@utils/Tools";
 import { DataSegProveedores } from "@backend/SeguimientoProveedores";
 import ReclamoProveedor from "@templates/ReclamoProveedor";
 import DataProveedores from "@backend/Proveedores";
@@ -15,30 +13,38 @@ let ID
 let myData
 
 const SeguimientoProveedor = async (content) => {
-  ID = getHash().replace("seguimiento_proveedor=", "");
-  myData = await DataSegProveedores.getDataById(ID);
-  console.log(myData)
-  if(typeof myData === 'object') {
-    const view = `
-      ${MainTitle({title:'Gestión de Reclamo a proveedor'})}
-      ${await template.form()}
-    `
-    content.innerHTML = view;
-    const forms = document.querySelectorAll('form')
-    forms.forEach(element => {
-      loadInputsById(myData,element)
-      listenerChangeEvent(element)
-    });
-    template.settings(myData)
-    const btnSendFirstReport = document.getElementById('sendFirstReport');
-    const saveNC = document.getElementById("update-nc");
-    const saveSP = document.getElementById("update-sp");
-    const prov = document.getElementById('id_prov');
+  const permissionsUser = await permissions();
+  console.log(permissionsUser)
+  const codigo_permisos = Number(permissionsUser.num)
+  const canGestion = codigo_permisos > 1
+  if (canGestion) {
+    ID = getHash().replace("seguimiento_proveedor=", "");
+    myData = await DataSegProveedores.getDataById(ID);
+    if(typeof myData === 'object') {
+      const view = `
+        ${MainTitle({title:'Gestión de Reclamo a proveedor'})}
+        ${await template.form()}
+      `
+      content.innerHTML = view;
+      const forms = document.querySelectorAll('form')
+      forms.forEach(element => {
+        loadInputsById(myData,element)
+        listenerChangeEvent(element)
+      });
+      template.settings(myData)
+      const btnSendFirstReport = document.getElementById('sendFirstReport');
+      const saveNC = document.getElementById("update-nc");
+      const saveSP = document.getElementById("update-sp");
+      const prov = document.getElementById('id_prov');
 
-    saveNC.addEventListener("click", handleSaveNC);
-    saveSP.addEventListener("click", handleSaveSP);
-    prov.addEventListener('change', handleProveedor);
-    btnSendFirstReport.addEventListener('click', handleSendFirstReport)
+      saveNC.addEventListener("click", handleSaveNC);
+      saveSP.addEventListener("click", handleSaveSP);
+      prov.addEventListener('change', handleProveedor);
+      btnSendFirstReport.addEventListener('click', handleSendFirstReport)
+    }
+  }
+  else {
+    location.hash = "/no-permissions"
   }
 }
 const handleSaveNC = async (event) => {

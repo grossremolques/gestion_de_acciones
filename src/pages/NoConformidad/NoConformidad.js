@@ -3,6 +3,7 @@ import NoConformidades from "@templates/NoConformidad";
 import { DataNoConformidad } from "@backend/NoConfomidad";
 import { permissions, getHash, loadInputsById, getDataFormValid, isEmptyObjet, today , listenerChangeEvent} from "@utils/Tools";
 import { buttonComponent } from "@components/Form";
+import DataEmployees from '@backend/Employees'
 const template = new NoConformidades()
 let ID
 let form
@@ -14,7 +15,6 @@ const NoConfomidad = async (content) => {
   const canGestion = codigo_permisos > 0
   ID = getHash().replace("no-conformidad=", "");
   myData = await DataNoConformidad.getNC(ID)
-  console.log(myData)
   const isCreator = myData.registrado_por === permissionsUser.alias
   const isResponse = myData.responsable === permissionsUser.alias
   const canSeeNC = canGestion && (isCreator || isResponse || codigo_permisos === 3)
@@ -53,38 +53,44 @@ const handleUpdate = async (event) => {
   const response = {}
   //Validar Formulario
   const data = getDataFormValid(event,form,'.change-save, .test')
+  const completedData = getDataFormValid(event,form,'.form-control')
+  completedData['id'] = ID
   if (!isEmptyObjet(data)) {
     data.registrado_por = myData.registrado_por
     template.modal.saving();
-    response['noConformidad'] = await handleNoConformidad(data)
+    response['noConformidad'] = await handleNoConformidad(data, completedData)
     if(data.reclamo_proveedor != myData.reclamo_proveedor) {
       data['id_nc'] = ID
       response['reclamo'] = await template.handleReclamo(data)
     }
+    const infoResponsable = await DataEmployees.getEmployeesByAlias(data.responsable);
+    const infoComprador = await DataEmployees.getEmployeesByAlias('TEST');
     template.modal.create({
       title: '📢 Notificación',
       content: `
       <ul class="list-group list-group-flush">
         <li class="list-group-item">${response.noConformidad.update ? '✅ Actualizado exitosamente en <strong>no conformidades</strong>': '❌ Falló el registro del desvío'}</li>
 
-        ${data.responsable != myData.responsable ? `<li class="list-group-item">${response.noConformidad.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${data.infoResponsable.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${data.infoResponsable.fullName}</strong>`}</li>`: ''}
+        ${data.responsable != myData.responsable ? `<li class="list-group-item">${response.noConformidad.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${infoResponsable.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${infoResponsable.fullName}</strong>`}</li>`: ''}
 
         ${data.reclamo_proveedor != myData.reclamo_proveedor && data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.update ? '✅ Guardado exitosamente en <strong>seguimiento a proveedores</strong>': '❌ Falló el registro del reclamo'}</li>`: ''}
 
-        ${data.reclamo_proveedor != myData.reclamo_proveedor && data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${'Matías Muller'}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${'Matías Muller'}</strong>`}</li>`: ''}
+        ${data.reclamo_proveedor != myData.reclamo_proveedor && data.reclamo_proveedor === 'Sí' ? `<li class="list-group-item">${response.reclamo.email ? `✅ 📧 Se notificó por email exitosamente a <strong>${infoComprador.fullName}</strong>`: `❌ 📧 No fué posible entregar el email a <strong>${'Matías Muller'}</strong>`}</li>`: ''}
       </ul>
       `
+
     })
     console.log(response)
   }
 }
-const handleNoConformidad = async (data) => {
+const handleNoConformidad = async (data, completedData) => {
   if(!hasInitDate) {data.fecha_inicio = today}
   const response = {}
   const responseUpdate = await updateNoConf(data);
   response['update'] = responseUpdate
   if(responseUpdate && data.responsable != myData.responsable){ 
-    const responseEmail = await template.sendEmailToResponsable(data);
+
+    const responseEmail = await template.sendEmailToResponsable(completedData);
     response['email'] = responseEmail
   }
   return response

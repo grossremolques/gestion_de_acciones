@@ -139,8 +139,10 @@ const convertGroupDates = (obj,type) => {
 }
 const permissions = async () => {
   const user = await DataEmployees.getActiveUser()
-  if(user) {const typePermission = await DataPermisos.typePermission(user.alias)
-  return typePermission}
+  if(user) {
+    const typePermission = await DataPermisos.typePermission(user.alias)
+    return typePermission ? typePermission : 0
+  }
 }
 const settingInputs = (props) => {
   const input = document.querySelector(`#${props.IdInput}`);

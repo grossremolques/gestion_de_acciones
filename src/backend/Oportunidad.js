@@ -53,6 +53,4 @@ const Attributes = new Oportunidad({
   rowHead: 1,
 });
 const DataOportunidad = new Oportunidad({ sheetId: SheetId, nameSheet: "Registro", rowHead: 1 });
-//const DataResponsable = new Oportunidad({ sheetId: SheetId, nameSheet: "Responsables", rowHead: 1 });
-//const DataPermisos = new Oportunidad({ sheetId: SheetId, nameSheet: "Permisos", rowHead: 1 });
 export { DataOportunidad, Attributes};

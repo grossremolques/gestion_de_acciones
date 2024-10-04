@@ -1,6 +1,6 @@
 import { today } from "../utils/Tools";
 import DataEmployees from "@backend/Employees";
-const site = "http://localhost:3000"; //'https://grossremolques.github.io/gestion_de_acciones/'
+const site = 'https://grossremolques.github.io/gestion_de_acciones/'
 const styles = {
   email:
     "font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; max-width: 500px; color: #333; font-size: 1rem; margin: auto;",

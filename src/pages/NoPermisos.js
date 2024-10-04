@@ -8,7 +8,7 @@ const NoPermisos = (content) => {
           </div>
           <div class="col-12 col-md-9 text-center text-md-end">
             <h1>No tienes permisos!</h1>
-            <p class="lead">Tu usuario no está habilitado para la gestión de acciones, solo puedes dar de alta.</p>
+            <p class="lead">Tu usuario no está habilitado para esta acción</p>
             <a class="btn btn-dark" href="/#">Ir al inicio</a>
           </div>
         </div>
