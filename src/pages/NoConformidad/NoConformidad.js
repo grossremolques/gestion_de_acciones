@@ -60,6 +60,7 @@ const NoConfomidad = async (content) => {
       updatePRO.addEventListener('click', async() => {
         const data = getDataForm(form, '.change-save');
         const completedData = getDataForm(form, '.form-control');
+        completedData['id'] = ID
         if (!isEmptyObjet(data)) {
           template.modal.saving();
           const response = {}

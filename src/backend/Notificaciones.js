@@ -1,6 +1,6 @@
 import { today } from "../utils/Tools";
 import DataEmployees from "@backend/Employees";
-const site = 'https://grossremolques.github.io/gestion_de_acciones/'
+const site = "https://grossremolques.github.io/gestion_de_acciones/";
 const styles = {
   email:
     "font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; max-width: 500px; color: #333; font-size: 1rem; margin: auto;",
@@ -18,8 +18,12 @@ class Notificaciones {
     try {
       const boundary = "foo_bar_baz"; // Un delimitador para separar las partes del correo
       let message =
-        "To:" + data.recipient + "\r\n" + 
-        (data.cc && data.cc.length > 0 ? "Cc: " + data.cc.join(", ") + "\r\n" : "") + // Añadir CC si hay correos
+        "To:" +
+        data.recipient +
+        "\r\n" +
+        (data.cc && data.cc.length > 0
+          ? "Cc: " + data.cc.join(", ") + "\r\n"
+          : "") + // Añadir CC si hay correos
         "Subject:" +
         data.subject +
         "\r\n" +
@@ -29,7 +33,9 @@ class Notificaciones {
         "--" +
         boundary +
         "\r\n" +
-        "Content-Type: text/html; charset=UTF-8\r\n\r\n" + data.body + "\r\n\r\n";
+        "Content-Type: text/html; charset=UTF-8\r\n\r\n" +
+        data.body +
+        "\r\n\r\n";
 
       //"Content-Type: text/html; charset=utf-8\r\n\r\n" + data.body;
       // Si hay adjuntos, los añadimos
@@ -66,9 +72,16 @@ class Notificaciones {
     }
   }
   async altaNoConformidad(data) {
-    const infoResponsable = await DataEmployees.getEmployeesByAlias(data.responsable);
-    const infoCreator = await DataEmployees.getEmployeesByAlias(data.registrado_por);
-    if (typeof infoResponsable === "object" && typeof infoCreator === "object") {
+    const infoResponsable = await DataEmployees.getEmployeesByAlias(
+      data.responsable
+    );
+    const infoCreator = await DataEmployees.getEmployeesByAlias(
+      data.registrado_por
+    );
+    if (
+      typeof infoResponsable === "object" &&
+      typeof infoCreator === "object"
+    ) {
       const body = `
       <div class="email" style="${styles.email}">
         <h1 style="font-size: 1.6rem;line-height: 1.8rem;">Alta de Salida no conforme</h1>
@@ -98,6 +111,11 @@ class Notificaciones {
       return await this.sendEmail({
         recipient: infoResponsable.email_empresa,
         subject: `Nueva Salida no conforme. ID: ${data.id}`,
+        cc:
+          data.tipo_desvio === "Procedimiento" &&
+          data.tipo_desvio === "Producto no conforme"
+            ? ["diego.gross@grossremolques.com"]
+            : null,
         body: body,
       });
     }
@@ -133,25 +151,53 @@ class Notificaciones {
       recipient: data.infoResponsable.email_empresa,
       subject: `${data.tipo}. ID: ${data.id}`,
       body: body,
+      cc:
+          data.tipo_desvio === "Procedimiento" &&
+          data.tipo_desvio === "Producto no conforme"
+            ? ["diego.gross@grossremolques.com"]
+            : null,
     });
   }
   async altaReclamoProveedor(data) {
     try {
-      const infoComprador = await DataEmployees.getEmployeesByAlias('MAMUL');
-      const infoCreator = await DataEmployees.getEmployeesByAlias(data.registrado_por);
-      if (typeof infoComprador === "object" && typeof infoCreator === "object") {
+      const infoComprador = await DataEmployees.getEmployeesByAlias("MAMUL");
+      const infoCreator = await DataEmployees.getEmployeesByAlias(
+        data.registrado_por
+      );
+      if (
+        typeof infoComprador === "object" &&
+        typeof infoCreator === "object"
+      ) {
         const body = `
         <div class="email" style="${styles.email}">
             <h1 style="font-size: 1.6rem;line-height: 1.8rem;">Alta de reclamo a proveedor</h1>
-            <p class="lead" style="font-size: 1.1rem">Estimado/a <strong>${infoComprador.fullName}</strong>,</p>
+            <p class="lead" style="font-size: 1.1rem">Estimado/a <strong>${
+              infoComprador.fullName
+            }</strong>,</p>
             <p>Se ha registrado una <strong>no conformidad</strong> en el sistema, la cual a generado un <strong>Reclamo a proveedor</strong>. A continuación, se proporcionan los detalles del desvío:</p>
             <ul style="${styles.card}">
-              <li style="${styles.card_item}"><strong>Registrado por:</strong><br> ${infoCreator.fullName}</li>
-              <li style="${styles.card_item}"><strong>Fecha de registro:</strong><br> ${today}</li>
-              <li style="${styles.card_item}"><strong>ID de la no conformidad:</strong><br> ${data.id_nc}</li>
-              <li style="${styles.card_item}"><strong>Proveedor:</strong><br> ${data.razon_social_prov}</li>
-              <li style="${styles.card_item}"><strong>Producto:</strong><br> ${data.pnc === "Otro" ? data.producto : data.pnc}</li>
-              <li style="${styles.card_item}"><strong>Desvío:</strong><br> ${data.desvio}</li>
+              <li style="${
+                styles.card_item
+              }"><strong>Registrado por:</strong><br> ${
+          infoCreator.fullName
+        }</li>
+              <li style="${
+                styles.card_item
+              }"><strong>Fecha de registro:</strong><br> ${today}</li>
+              <li style="${
+                styles.card_item
+              }"><strong>ID de la no conformidad:</strong><br> ${
+          data.id_nc
+        }</li>
+              <li style="${styles.card_item}"><strong>Proveedor:</strong><br> ${
+          data.razon_social_prov
+        }</li>
+              <li style="${styles.card_item}"><strong>Producto:</strong><br> ${
+          data.pnc === "Otro" ? data.producto : data.pnc
+        }</li>
+              <li style="${styles.card_item}"><strong>Desvío:</strong><br> ${
+          data.desvio
+        }</li>
             </ul>
             <p>Te recordamos la importancia de gestionar este reclamo con el proveedor y hacer un seguimiento riguroso para asegurar una resolución oportuna. Por favor, revisa los detalles, comunícate con el proveedor y actúa en consecuencia.</p>
             
@@ -169,12 +215,10 @@ class Notificaciones {
           subject: `Reclamo a proveedor. ID: ${data.id}`,
           body: body,
         });
+      } else {
       }
-      else {
-      }
-    }
-    catch(e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   }
   bodyEmailFirstReport(data) {
@@ -194,7 +238,7 @@ class Notificaciones {
         <li style="${styles.card_item}; border-bottom:none"><strong>Fecha de guía:</strong><br> ${data.fecha_guia}</li>
       </ul>
       <p>Dado lo anterior, solicitamos de su parte una respuesta a la brevedad posible con relación a este reclamo, le facilitamos un formulario de respuesta, por favor, completelo:</p>
-      <a href="https://forms.gle/5JqxFHMcrm6VqwtR9" target="_blank" style="${ styles.color_btn_red} ${styles.buton_link}">Formulario de Respuesta</a>
+      <a href="https://forms.gle/5JqxFHMcrm6VqwtR9" target="_blank" style="${styles.color_btn_red} ${styles.buton_link}">Formulario de Respuesta</a>
       <p style="margin-top: 15px">Agradecemos de antemano su colaboración y quedamos atentos al envío del formulario.</p>
       <p>Saludos cordiales</p>
     </div>

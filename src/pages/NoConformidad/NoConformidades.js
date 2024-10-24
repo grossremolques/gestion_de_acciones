@@ -86,6 +86,18 @@ const formFilter = async () => {
         className: "filter",
         sizes: "sm",
       })}
+      ${selectComponent({
+        col: "auto",
+        mdCol: "auto",
+        xlCol: "auto",
+        id: "origen",
+        name: "origen",
+        placeholder: "Origen",
+        data: attributes,
+        textNode: "origen",
+        className: "filter",
+        sizes: "sm",
+      })}
       ${buttonComponent({
         col: "auto",
         mdCol: "auto",

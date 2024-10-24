@@ -1,7 +1,6 @@
 import { getColumnByKey, convertGroupDates } from "../utils/Tools";
 import MyCustumeModal from "../components/MyCustumeModal";
 import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 class ApiServices {
   constructor(props) {
     this.nameSheet = props.nameSheet;
