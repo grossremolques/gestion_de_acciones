@@ -1,6 +1,6 @@
 {
   "name": "gestion_de_acciones",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Gestión de acciones",
   "main": "index.js",
   "scripts": {

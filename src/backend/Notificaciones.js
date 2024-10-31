@@ -112,7 +112,7 @@ class Notificaciones {
         recipient: infoResponsable.email_empresa,
         subject: `Nueva Salida no conforme. ID: ${data.id}`,
         cc:
-          data.tipo_desvio === "Procedimiento" &&
+          data.tipo_desvio === "Procedimiento" ||
           data.tipo_desvio === "Producto no conforme"
             ? ["diego.gross@grossremolques.com"]
             : null,
